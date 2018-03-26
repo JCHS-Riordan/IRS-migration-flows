@@ -1,0 +1,32 @@
+<div id="state_migration_map"></div>
+
+<!-- "min" and "max" of slider represent columns of HI data in google sheet -->
+<input id="year_slider" type="range" min=2012 max=2016 value=2016>
+<p id= "year_label" class="hidden">2016</p>
+
+<select id="select_age">
+  <option value="Under 26">Under 26</option>
+  <option value="26-34" selected>26-34</option>
+  <option value="35-44">35-44</option>
+  <option value="45-54">45-54</option>
+  <option value="55-64">55-64</option>
+  <option value="65 and over">65 and over</option>
+</select>
+
+<div id="drilldown_chart"></div>
+
+<!-- jQuery (for additional interactive features) -->
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+<!-- Highchart mapping library -->
+<script src="https://code.highcharts.com/maps/highmaps.js"></script>
+
+<!-- Highchart core library, for charts -->
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/series-label.js"></script>
+<script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+
+<!-- JCHS Shapefiles (GeoJSON format) -->
+<script src="https://s3.amazonaws.com/jchs-geojson-test/cbsa_2016_simplified_precision1_js.js"></script>
+<script src="https://s3.amazonaws.com/jchs-geojson-test/states_2016_simplified_precision1_js.js"></script>
+
