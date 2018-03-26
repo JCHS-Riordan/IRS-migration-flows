@@ -11,6 +11,13 @@
   margin: 20px auto;
 }
 
+.tooltip_chart_top {
+  height: 165px; 
+  width: 300px;
+  margin: auto;
+  padding: 0px;
+}
+
 .tooltip_chart {
   height: 120px; 
   width: 300px;
