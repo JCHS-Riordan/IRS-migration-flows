@@ -24,14 +24,11 @@ $(document).ready(function() {
     ref_data = obj.values
     categories = ref_data[0]
     console.log(categories)
-    data = ref_data.map(function (val, idx) {
-      //x.splice(1,1)
-      if (val[0] === 2016) {
-          return [val[1],val[12]]
-      } else {
-        return false
-      }
-    })
+    data = ref_data
+      .filter(filter_val => filter_val[0] === 2016)
+      .map(function (val, idx) {
+        return [val[1],val[10]]
+      })
     //data = obj.values
     column_name = data[0][1]
     $('.year_label').html(column_name)
@@ -321,15 +318,12 @@ $("#year_slider").on('input', function () {
 
 $('#year_slider').on('change', function () {
   var selected_year = this.value
-  new_data = ref_data.map(function (val, idx) {
-    //x.splice(1,1)
-    if (val[0] === selected_year) {
-      return [val[1],val[12]]
-    } else {
-      return false
-    }
+  new_data = ref_data
+    .filter(filter_val => filter_val[0].toString() === selected_year)
+    .map(function (val, idx) {
+    return [val[1],val[10]]
   })
-         console.log(new_data)
+  console.log(new_data)
   column_name = new_data[0][1]
   $('#year_label').html(column_name)
   map.series[0].setData(new_data)
