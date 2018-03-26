@@ -116,10 +116,11 @@ $(document).ready(function() {
 
       colorAxis: {
         type: 'linear',
-                stops: [
-            [0.1, '#c4463a'],
-            [0.5, '#fffbbc'],
-            [0.9, '#3060cf']
+        stops: [
+          [0.1, '#AF3C31'], //Originally c4463a
+          [0.4, '#E87171'],
+          [0.5, '#D7F3F0'], //Originally fffbbc
+          [0.9, '#1E328E'] //Originally 3060cf
         ],
         min: -200000,
         max: 200000,
@@ -255,18 +256,13 @@ $(document).ready(function() {
                 color: '#4E7686',
                 //animation: false,
                 zones: [
-                  {
-                    value: -5000,
-                    color: '#C14D00'
-                  }, {
+                 {
                     value: 0,
-                    color: '#F5C35C'
+                    color: '#AF3C31'
                   }, {
                     value: 5000,
-                    color: '#ABBFC3'
-                  }, {
-                    color: '#4E7686'
-                  }
+                    color: '#4E7686' 
+                  },
                 ],
               }]
             });
@@ -353,13 +349,13 @@ $(document).ready(function() {
                 zones: [
                   {
                     value: -15000,
-                    color: '#C14D00'
+                    color: '#AF3C31'
                   }, {
                     value: 0,
-                    color: '#F5C35C'
+                    color: '#E87171'
                   }, {
                     value: 15000,
-                    color: '#ABBFC3'
+                    color: '#68CBC0'
                   }, {
                     color: '#4E7686'
                   }
