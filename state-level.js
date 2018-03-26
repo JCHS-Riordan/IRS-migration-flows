@@ -116,7 +116,15 @@ $(document).ready(function() {
       },
 
       colorAxis: {
-        dataClasses: [
+        type: 'linear',
+                stops: [
+            [0.1, '#c4463a'],
+            [0.5, '#fffbbc'],
+            [0.9, '#3060cf']
+        ],
+        min: -200000,
+        max: 200000,
+        /*dataClasses: [
           {
             to: -1000,
             color: '#900404'
@@ -132,7 +140,7 @@ $(document).ready(function() {
             from: 1000,
             color: '#4E7686'
           }
-        ],
+        ],*/
       },
 
       //colors: ['#C14D00', '#E4DCD5', '#6BA2B8'],
