@@ -1,5 +1,3 @@
-
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~ https://api.highcharts.com/highmaps/ ~~~~*/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -70,7 +68,7 @@ $(document).ready(function() {
         widthAdjust: -300,
         align: 'left',
         x: 300,
-        y: -25,
+        y: 0,
         verticalAlign: 'bottom',
         style: {
           color: '#999999',
@@ -91,13 +89,14 @@ $(document).ready(function() {
         title: {
           text: 'Net flow<br />of individuals'  
         },
-        layout: 'vertical',
-        align: 'right',
-        verticalAlign: 'middle',
-        y: 110,
-        x: 15,
+        layout: 'horizontal',
+        align: 'center',
+        verticalAlign: 'bottom',
+        y: -10,
+        x: 150,
+        symbolWidth: 280,
         //symbolHeight: 140,
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        backgroundColor: 'rgba(255, 255, 255, 0.0)',
         //reversed: true,
         /*labelFormatter: function () {
           if (!this.from & this.from != 0) {
@@ -169,7 +168,6 @@ $(document).ready(function() {
           type: 'mapline',
           name: 'State borders',
           data: states,
-
           enableMouseTracking: false
         }*/
       ],
@@ -445,5 +443,3 @@ $('#year_slider').mousedown(function () {
 $('#year_slider').mouseup(function () {
   $('#year_label').addClass('hidden')
 });
-
-
