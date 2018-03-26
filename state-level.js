@@ -1,5 +1,3 @@
-//Hello from Matthew
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~ https://api.highcharts.com/highmaps/ ~~~~*/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -165,7 +163,6 @@ $(document).ready(function() {
           type: 'mapline',
           name: 'State borders',
           data: states,
-
           enableMouseTracking: false
         }*/
       ],
@@ -350,85 +347,3 @@ $('#year_slider').mousedown(function () {
 $('#year_slider').mouseup(function () {
   $('#year_label').addClass('hidden')
 });
-
-function getMetroInfo(GEOID, metro_name) {
-  console.log(GEOID)
-  chart_data = []
-  $.each(ref_data, function (idx, el) {
-    if (el[0] == GEOID) {
-      console.log(el[0])
-      for (i = 2; i<10; i++) {
-        chart_data.push(el[i])
-      }
-    }
-  } )
-  console.log(chart_data)
-  var chart = Highcharts.chart("drilldown_chart", {
-    chart: {
-      spacingTop: 1,
-      marginTop: 30
-    },
-
-    title: {
-      text: metro_name,
-      style: {
-        fontSize: '15px'
-      }
-    },
-
-    credits: {
-      enabled: false
-    },
-
-    legend: {
-      enabled: false  
-    },
-
-    exporting: {
-      enabled: false
-    },
-
-    yAxis: {
-      labels: {
-        format: '{value}%'
-      },
-
-      title: {
-        text: null
-      }
-    },
-
-    tooltip: {
-      pointFormat: '<b>{point.y}</b>',
-      valueSuffix: '%'
-    },
-
-    xAxis: {
-      categories: categories.slice(2,10)
-    },
-
-    series: [{
-      name: 'LIRA',
-      data: chart_data,
-      color: '#4E7686',
-      zones: [
-        {
-          value: -5,
-          color: '#C14D00'
-        }, {
-          value: 0,
-          color: '#F5C35C'
-        }, {
-          value: 5,
-          color: '#E4DCD5'
-        }, {
-          value: 10,
-          color: '#ABBFC3'
-        }, {
-          color: '#4E7686'
-        }
-      ],
-    }]
-  });
-
-} //end getMetroInfo()
