@@ -1,0 +1,88 @@
+
+#state_migration_map {
+  height: 600px; 
+  width: 800px; 
+  margin: 0px auto; 
+}
+
+#drilldown_chart {
+  height: 175px; 
+  width: 600px;
+  margin: 20px auto;
+}
+
+.tooltip_chart {
+  height: 120px; 
+  width: 300px;
+  margin: auto;
+  padding: 0px;
+}
+
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+table {
+  margin: 10px auto;
+}
+
+#year_slider {
+  margin: 25px auto 10px;
+  -webkit-appearance: none;
+  width: 300px;
+  height: 15px;
+  border-radius: 3px;
+  background: #E4DCD5;
+  outline: none;
+  display: block;
+}
+
+#year_slider::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default look */
+    appearance: none;
+    width: 25px; /* Set a specific slider handle width */
+    height: 25px; /* Slider handle height */
+    border-radius: 20%;
+    background: #4E7686; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+}
+
+
+#year_slider::-moz-range-thumb {
+    appearance: none;
+    width: 25px; /* Set a specific slider handle width */
+    height: 25px; /* Slider handle height */
+    border-radius: 20%;
+    background: #4E7686; /* Green background */
+    cursor: pointer; /* Cursor on hover */
+}
+
+#year_label {
+  text-align: center;
+  font-family: sans-serif;
+  color: rgba(100,100,100,0.9);
+  font-size: 1.25em;
+  /*margin: 15px auto;*/
+  position: fixed;
+  left: 50%;
+  margin-left: 158px;
+  margin-top: -28px;
+
+}
+
+.hidden {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  transition-delay: 0s;
+}
+
+select {
+  margin: 10px 5px auto;
+  font-size:16px; 
+  display: inline-block;
+  height: 22px;
+  width: 25%;
+}
