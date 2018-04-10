@@ -48,16 +48,17 @@ function createMap() {
       }
     })
 
+    
     // Create the chart 
     map = Highcharts.mapChart('state_migration_map', {
       chart: {
         //height: 600,
         //width: 800,
-        margin: [50,10, 75, 10],
+        margin: [50, 5, 60, 5],
         borderWidth: 0,
         events: {
-          load: function(event) {
-            this.renderer.image(logoURL,0,this.chartHeight-80,289,85).add() // (src,x,y,width,height)
+          load: function() {
+            this.renderer.image(logoURL,this.chartWidth-204,this.chartHeight-58,221,65).add() // (src,x,y,width,height)
           },
         },
       },
@@ -66,7 +67,7 @@ function createMap() {
 
       subtitle: {
         //use subtitle element for our table notes
-        text: 'Notes: Data are measured using tax exemptions, which approximate individuals. <br/> Source: JCHS tabulations of IRS, SOI Migration Data.',
+        text: null,
         widthAdjust: -300,
         align: 'left',
         x: 300,
@@ -89,13 +90,13 @@ function createMap() {
 
       legend: {
         title: {
-          text: 'Net flow<br />of individuals'  
+          text: 'Net flow of individuals'  
         },
         layout: 'horizontal',
-        align: 'center',
+        align: 'left',
         verticalAlign: 'bottom',
-        y: -10,
-        x: 140,
+        y: 23,
+        //x: 10,
         symbolWidth: 280,
         backgroundColor: 'rgba(255, 255, 255, 0.0)',
         //reversed: true,
