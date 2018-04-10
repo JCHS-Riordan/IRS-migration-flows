@@ -252,6 +252,7 @@ $('#year_slider').on('change', function () {
   if (typeof ageGroupChart !== 'undefined') {
 
     var GEOID = map.getSelectedPoints()[0].GEOID
+    var state_name = map.getSelectedPoints()[0].name
     var new_chart_data = []
 
     ref_data
@@ -263,6 +264,8 @@ $('#year_slider').on('change', function () {
     })
 
     ageGroupChart.series[0].setData(new_chart_data)
+    $('#drilldown_title').html(state_name + ', ' + selected_year)
+
   }
 
 })
@@ -285,6 +288,8 @@ $("#year_slider").on('input', function () {
 function drilldownState (GEOID, state_name) {
   console.log(GEOID + ' ' + state_name)
 
+  $('#drilldown_title').html(state_name + ', ' + selected_year)
+
   var chart_data = []
   var line_data = []
 
@@ -298,16 +303,15 @@ function drilldownState (GEOID, state_name) {
     } //end if
   }) //edn forEach
 
-  $('#drilldown_title').html(state_name + ', ' + selected_year)
-
   ageGroupChart = Highcharts.chart('age_group_chart', {
     chart: {
       type: 'column',
       spacingTop: 0,
-      marginTop: 10,
-      spacingBottom: 10,
+      marginTop: 15,
+      spacingBottom: 0,
       spacingRight: 11,
-      marginLeft: 50
+      marginLeft: 50,
+      borderWidth: 0
     },
 
     title: {
@@ -350,10 +354,11 @@ function drilldownState (GEOID, state_name) {
     chart: {
       type: 'line',
       spacingTop: 0,
-      marginTop: 5,
-      spacingBottom: 0,
+      marginTop: 25,
+      spacingBottom: -3,
       spacingRight: 11,
-      marginLeft: 50
+      marginLeft: 50,
+      borderWidth: 0
     },
 
     title: { text: null },
@@ -413,7 +418,7 @@ function drilldownState (GEOID, state_name) {
 
       $('#clear_button').remove()
       $('#drilldown_title').html('')
-      $('#age_group_chart').html('Click on a state <br />to see change over time...')
+      $('#age_group_chart').append('<h4>Click on a state to see age groups and change over time</h4>')
 
       timeSeriesChart.destroy()
       ageGroupChart.destroy()
