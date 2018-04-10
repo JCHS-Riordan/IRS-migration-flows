@@ -12,12 +12,12 @@
 }
 
 .drilldown {
-  height: 180px; 
-  width: 294px;
+  height: 189px; 
+  width: 300px;
   /*margin: 20px auto;*/
   float: left;
   clear: left;
-  margin: 3px 3px;
+  margin: 0px 0px;
   display: block;
   background: none;
 }
@@ -122,5 +122,5 @@ h4 {
   margin: 70px auto;
   font-family: "Lucida Grande", "Lucida Sans Unicode", sans-serif;
   color: #C14D00;
-  font-size: 18px;
+  font-size: 16px;
 }
