@@ -1,14 +1,33 @@
-
-#state_migration_map {
-  height: 600px; 
-  width: 800px; 
-  margin: 0px auto; 
+#map_wrapper {
+  width: 800px;
+  margin: auto;
 }
 
-#drilldown_chart {
-  height: 175px; 
-  width: 600px;
-  margin: 20px auto;
+#state_migration_map {
+  height: 400px; 
+  width: 500px; 
+  /*margin: 0px auto;*/
+  overflow: hidden;
+  margin-left: 300;
+}
+
+.drilldown {
+  height: 180px; 
+  width: 294px;
+  /*margin: 20px auto;*/
+  float: left;
+  clear: left;
+  margin: 3px 3px;
+  display: block;
+  background: none;
+}
+
+.drilldown.title {
+  height: 22px;
+  text-align: center;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+  background: none;
+
 }
 
 .tooltip_chart_top {
@@ -25,18 +44,23 @@
   padding: 0px;
 }
 
-table, th, td {
-  border: 1px solid black;
-  border-collapse: collapse;
-  text-align: center;
+form {
+  float: left;
+  margin: 10px;
+  width: 300px;
 }
 
-table {
-  margin: 10px auto;
+select {
+  width: 100px;
+}
+
+p {
+  font-size: 11px;
 }
 
 #year_slider {
-  margin: 25px auto 10px;
+  margin: 20px 10px 10px 425px;
+  /*margin-left: 400px;*/
   -webkit-appearance: none;
   width: 300px;
   height: 15px;
@@ -74,8 +98,8 @@ table {
   /*margin: 15px auto;*/
   position: fixed;
   left: 50%;
-  margin-left: 158px;
-  margin-top: -28px;
+  margin-left: 330px;
+  margin-top: -29px;
 
 }
 

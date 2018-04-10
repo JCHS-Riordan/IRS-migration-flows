@@ -1,19 +1,33 @@
-<div id="state_migration_map"></div>
+<div id="map_wrapper">
+  <div id="drilldown_title" class="drilldown title"></div>
+  <div id="age_group_chart" class="drilldown"></div>
+  <div id="time_series_chart" class="drilldown"></div>
+  <div id="state_migration_map"></div>
 
-<!-- "min" and "max" of slider represent columns of HI data in google sheet -->
-<input id="year_slider" type="range" min=2012 max=2016 value=2016>
-<p id= "year_label" class="hidden">2016</p>
+  <form>
+    <select id="select_age">
+      <option value="Under 26">Under 26</option>
+      <option value="26-34" selected>26-34</option>
+      <option value="35-44">35-44</option>
+      <option value="45-54">45-54</option>
+      <option value="55-64">55-64</option>
+      <option value="65 and over">65 and over</option>
+    </select>
+  </form>
+  
+  <!-- "min" and "max" of slider represent columns of HI data in google sheet -->
+  <input id="year_slider" type="range" min=2012 max=2016 value=2016>
+  <p id= "year_label" class="hidden">2016</p>
 
-<select id="select_age">
-  <option value="Under 26">Under 26</option>
-  <option value="26-34" selected>26-34</option>
-  <option value="35-44">35-44</option>
-  <option value="45-54">45-54</option>
-  <option value="55-64">55-64</option>
-  <option value="65 and over">65 and over</option>
-</select>
+  <br />
+  <p>
+    Notes: Data are measured using tax exemptions, which approximate individuals. 
+    <br/>
+    Source: JCHS tabulations of IRS, SOI Migration Data.
+  </p>
 
-<div id="drilldown_chart"></div>
+</div>
+
 
 <!-- jQuery (for additional interactive features) -->
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -29,4 +43,3 @@
 <!-- JCHS Shapefiles (GeoJSON format) -->
 <script src="https://s3.amazonaws.com/jchs-geojson-test/cbsa_2016_simplified_precision1_js.js"></script>
 <script src="https://s3.amazonaws.com/jchs-geojson-test/states_2016_simplified_precision1_js.js"></script>
-
