@@ -11,7 +11,7 @@ var categories = []
 var selected_year = "2016"
 
 $(document).ready(function() {
-createMap()
+  createMap()
 })
 
 function createMap() {
@@ -25,15 +25,15 @@ function createMap() {
 
   $.get(requestURL, function(obj) {
     console.log(requestURL)
-    
+
     ref_data = obj.values
     console.log(ref_data[0]) //column gheaders
-    
+
     data = ref_data
       .filter(filter_val => filter_val[0] === 2016)
       .map(function (val, idx) {
-        return [val[1],val[10]]
-      })
+      return [val[1],val[10]]
+    })
 
     column_name = data[0][1]
     $('.year_label').html(column_name)
@@ -48,7 +48,7 @@ function createMap() {
       }
     })
 
-    
+
     // Create the chart 
     map = Highcharts.mapChart('state_migration_map', {
       chart: {
@@ -195,7 +195,7 @@ function createMap() {
         //formatter: 
       }, //end tooltip
 
-      
+
       /*~~~~~~Exporting options~~~~~~*/
       exporting: {
         enabled: true,
@@ -233,16 +233,37 @@ function createMap() {
 
 
 $('#year_slider').on('change', function () {
+
   selected_year = this.value
-  new_data = ref_data
-    .filter(filter_val => filter_val[0].toString() === selected_year)
-    .map(function (val, idx) {
-    return [val[1],val[10]]
+  var new_data = []
+
+  ref_data
+    .filter(filter_val => filter_val[0] == selected_year)
+    .forEach(function (val, idx) {
+    new_data.push([val[1],val[10]])
   })
-  //console.log(new_data)
+
   $('#year_label').html(selected_year)
   map.series[0].setData(new_data)
   map.title.update({text: 'Domestic Migration: Net Flows<br/><span style="font-size: 15px;">' + selected_year + '</span>' })
+
+
+  //change drilldown chart, if it exists
+  if (typeof ageGroupChart !== 'undefined') {
+
+    var GEOID = map.getSelectedPoints()[0].GEOID
+    var new_chart_data = []
+
+    ref_data
+      .filter(filter_val => filter_val[0] == selected_year)
+      .forEach(function (val, idx) {
+      if (val[1] == GEOID) {
+        val.slice(11,17).map(x => new_chart_data.push(x))
+      } //end if
+    })
+
+    ageGroupChart.series[0].setData(new_chart_data)
+  }
 
 })
 
@@ -266,20 +287,20 @@ function drilldownState (GEOID, state_name) {
 
   var chart_data = []
   var line_data = []
-  
+
   ref_data.forEach(function (el) {
     if (el[1] == GEOID) {
       line_data.push( {y: el[10], x: el[0]} )
 
       if (el[0] == selected_year) {
-          el.slice(11,17).map(x => chart_data.push(x))
+        el.slice(11,17).map(x => chart_data.push(x))
       } //end if
     } //end if
   }) //edn forEach
 
   $('#drilldown_title').html(state_name + ', ' + selected_year)
 
-  $("#age_group_chart").highcharts({
+  ageGroupChart = Highcharts.chart('age_group_chart', {
     chart: {
       type: 'column',
       spacingTop: 0,
@@ -309,7 +330,7 @@ function drilldownState (GEOID, state_name) {
     credits: { enabled: false },
     legend: { enabled: false },
     exporting: { enabled: false },
-    
+
     series: [{
       name: 'Net Flow',
       data: chart_data,
@@ -324,8 +345,8 @@ function drilldownState (GEOID, state_name) {
     }] //end series
   }) //end column chart
 
-  
-  $("#time_series_chart").highcharts({
+
+  timeSeriesChart = Highcharts.chart('time_series_chart', {
     chart: {
       type: 'line',
       spacingTop: 0,
@@ -336,7 +357,7 @@ function drilldownState (GEOID, state_name) {
     },
 
     title: { text: null },
-    
+
     xAxis: {
       labels: {
         overflow: false
@@ -345,13 +366,13 @@ function drilldownState (GEOID, state_name) {
       tickLength: 0
 
     },
-    
+
     yAxis: {
       title: {
         text: null
       }
     },
-    
+
     credits: { enabled: false },
     legend: { enabled: false },
     exporting: { enabled: false },
@@ -377,5 +398,27 @@ function drilldownState (GEOID, state_name) {
       ],
     }] //end series
   }) //end line chart
+
+  //add button to clear the selection
+  if (!$('#clear_button').length) {
+    map.renderer.button('Clear<br />selection',430,300)
+      .attr({
+      padding: 3,
+      id: 'clear_button'
+    })
+      .add()
+
+    $('#clear_button').click(function () { 
+      map.series[0].data[map.getSelectedPoints()[0].index].select()
+
+      $('#clear_button').remove()
+      $('#drilldown_title').html('')
+      $('#age_group_chart').html('Click on a state <br />to see change over time...')
+
+      timeSeriesChart.destroy()
+      ageGroupChart.destroy()
+    })
+  }
+
 } // end drilldownState()
 
