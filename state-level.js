@@ -9,6 +9,7 @@ var ref_data = []
 var data = []
 var categories = []
 var selected_year = "2016"
+var selected_age_idx = 10
 
 $(document).ready(function() {
   createMap()
@@ -233,14 +234,29 @@ function createMap() {
 
 
 $('#year_slider').on('change', function () {
+  selected_year = $('#year_slider').val()
+  changeData()
+})
+        
+$('#select_age').on('change', function () {
+  selected_age_idx = $('#select_age').val()
+  if (selected_age_idx != 10) {
+    map.update({colorAxis: {min: -50000, max: 50000}})
+  } else {
+    {
+    map.update({colorAxis: {min: -200000, max: 200000}})
+  }
+  }
+  changeData()
+})
 
-  selected_year = this.value
+function changeData () {
   var new_data = []
 
   ref_data
     .filter(filter_val => filter_val[0] == selected_year)
     .forEach(function (val, idx) {
-    new_data.push([val[1],val[10]])
+    new_data.push([val[1],val[selected_age_idx]])
   })
 
   $('#year_label').html(selected_year)
@@ -268,7 +284,7 @@ $('#year_slider').on('change', function () {
 
   }
 
-})
+}
 
 $('#year_slider').mousedown(function () {
   $('#year_label').removeClass('hidden')
