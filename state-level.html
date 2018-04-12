@@ -1,13 +1,13 @@
 <div id="map_wrapper">
   <div id="drilldown_title" class="drilldown title"></div>
   <div id="age_group_chart" class="drilldown">
-    <h4>Click on a state to see age groups and change over time</h4>
+    <h4 class="map-instructions">Click on a state to see age groups and change over time</h4>
   </div>
   <div id="time_series_chart" class="drilldown"></div>
   <div id="state_migration_map"></div>
 
-  <form>
-    <select id="select_age">
+  <form class="age-form">
+    <select id="select_age" class="select-age">
       <option value="10" selected>All Ages</option>
       <option value="11">Under 26</option>
       <option value="12">26-34</option>
@@ -23,7 +23,7 @@
   <p id= "year_label" class="hidden">2016</p>
 
   <br />
-  <p>
+  <p class="table-notes">
     Notes: Data are measured using tax exemptions, which approximate individuals. 
     <br/>
     Source: JCHS tabulations of IRS, SOI Migration Data.
