@@ -46,12 +46,13 @@
 
 form {
   float: left;
+  clear: left;
   margin: 10px;
   width: 300px;
 }
 
 select {
-  width: 100px;
+  width: 100%;
 }
 
 p {
