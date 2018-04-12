@@ -11,6 +11,20 @@
   margin-left: 300;
 }
 
+.map-instructions {
+  margin: 70px auto;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+  color: #C14D00;
+  font-size: 16px;
+}
+
+.drilldown.title {
+  height: 22px;
+  text-align: center;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+  background: none;
+}
+
 .drilldown {
   height: 189px; 
   width: 300px;
@@ -22,36 +36,14 @@
   background: none;
 }
 
-.drilldown.title {
-  height: 22px;
-  text-align: center;
-  font-family: "Lucida Grande", "Lucida Sans Unicode", sans-serif;
-  background: none;
-
-}
-
-.tooltip_chart_top {
-  height: 165px; 
-  width: 300px;
-  margin: auto;
-  padding: 0px;
-}
-
-.tooltip_chart {
-  height: 60px; 
-  width: 300px;
-  margin: auto;
-  padding: 0px;
-}
-
-form {
+.age-form {
   float: left;
   clear: left;
   margin: 10px;
   width: 300px;
 }
 
-select {
+.select-age {
   width: 100%;
   margin: 10px 5px auto;
   font-size:16px; 
@@ -59,10 +51,12 @@ select {
   height: 22px;
 }
 
-p {
+.table-notes {
   font-size: 11px;
 }
 
+
+/*~~~~~~~~~~~~~ Year Slider ~~~~~~~~~~~~~~~~*/
 #year_slider {
   margin: 20px 10px 10px 425px;
   /*margin-left: 400px;*/
@@ -115,10 +109,3 @@ p {
   transition-delay: 0s;
 }
 
-
-h4 {
-  margin: 70px auto;
-  font-family: "Lucida Grande", "Lucida Sans Unicode", sans-serif;
-  color: #C14D00;
-  font-size: 16px;
-}
