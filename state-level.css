@@ -1,5 +1,10 @@
+#dashboard_wrapper {
+  width: 1100px;
+  margin: 20px auto;
+}
+
 #map_wrapper {
-  width: 800px;
+  width: 500px;
   margin: auto;
 }
 
@@ -8,14 +13,14 @@
   width: 500px; 
   /*margin: 0px auto;*/
   overflow: hidden;
-  margin-left: 300;
+  margin: auto;
 }
 
 .map-instructions {
-  margin: 70px auto;
+  margin: 80px 0px 0px 40px;
   font-family: "Lucida Grande", "Lucida Sans Unicode", sans-serif;
   color: #C14D00;
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .drilldown.title {
@@ -37,15 +42,15 @@
 }
 
 .age-form {
-  float: left;
-  clear: left;
-  margin: 10px;
+
+  margin: auto;
   width: 300px;
+  display: block;
 }
 
 .select-age {
   width: 100%;
-  margin: 10px 5px auto;
+  margin: 10px auto 10px;
   font-size:16px; 
   display: inline-block;
   height: 22px;
@@ -53,12 +58,14 @@
 
 .table-notes {
   font-size: 11px;
+  width: 500px;
+  margin: auto 20px;
 }
 
 
 /*~~~~~~~~~~~~~ Year Slider ~~~~~~~~~~~~~~~~*/
 #year_slider {
-  margin: 20px 10px 10px 425px;
+  margin: 20px auto 10px auto;
   /*margin-left: 400px;*/
   -webkit-appearance: none;
   width: 300px;
@@ -70,23 +77,23 @@
 }
 
 #year_slider::-webkit-slider-thumb {
-    -webkit-appearance: none; /* Override default look */
-    appearance: none;
-    width: 25px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
-    border-radius: 20%;
-    background: #4E7686; /* Green background */
-    cursor: pointer; /* Cursor on hover */
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  border-radius: 20%;
+  background: #4E7686; /* Green background */
+  cursor: pointer; /* Cursor on hover */
 }
 
 
 #year_slider::-moz-range-thumb {
-    appearance: none;
-    width: 25px; /* Set a specific slider handle width */
-    height: 25px; /* Slider handle height */
-    border-radius: 20%;
-    background: #4E7686; /* Green background */
-    cursor: pointer; /* Cursor on hover */
+  appearance: none;
+  width: 25px; /* Set a specific slider handle width */
+  height: 25px; /* Slider handle height */
+  border-radius: 20%;
+  background: #4E7686; /* Green background */
+  cursor: pointer; /* Cursor on hover */
 }
 
 #year_label {
@@ -97,7 +104,7 @@
   /*margin: 15px auto;*/
   position: fixed;
   left: 50%;
-  margin-left: 330px;
+  margin-left: 155px;
   margin-top: -29px;
 
 }

@@ -1,46 +1,46 @@
-<div id="map_wrapper">
+<div id="dashboard_wrapper">
   <div id="drilldown_title" class="drilldown title"></div>
   <div id="age_group_chart" class="drilldown">
-    <h4 class="map-instructions">Click on a state to see age groups and change over time</h4>
+    <h4 class="map-instructions">Click on a state to see age groups<br>and change over time ==></h4>
   </div>
   <div id="time_series_chart" class="drilldown"></div>
-  <div id="state_migration_map"></div>
 
-  <form class="age-form">
-    <select id="select_age" class="select-age">
-      <option value="10" selected>All Ages</option>
-      <option value="11">Under 26</option>
-      <option value="12">26-34</option>
-      <option value="13">35-44</option>
-      <option value="14">45-54</option>
-      <option value="15">55-64</option>
-      <option value="16">65 and over</option>
-    </select>
-  </form>
-  
-  <!-- To show households (i.e. returns):
-      <option value="3" selected>All Ages</option>
-      <option value="4">Under 26</option>
-      <option value="5">26-34</option>
-      <option value="6">35-44</option>
-      <option value="7">45-54</option>
-      <option value="8">55-64</option>
-      <option value="9">65 and over</option>
--->
-  
-  <!-- "min" and "max" of slider represent columns of HI data in google sheet -->
-  <input id="year_slider" type="range" min=2012 max=2016 value=2016>
-  <p id= "year_label" class="hidden">2016</p>
+  <div id="map_wrapper">
+    <div id="state_migration_map"></div>
 
-  <br />
-  <p class="table-notes">
-    Notes: Data are measured using tax exemptions, which approximate individuals. 
-    <br/>
-    Source: JCHS tabulations of IRS, SOI Migration Data.
-  </p>
+    <input id="year_slider" type="range" min=2012 max=2016 value=2016>
+    <p id= "year_label" class="hidden">2016</p>
 
+    <form class="age-form">
+      <select id="select_age" class="select-age">
+        <option value="10" selected>All Ages</option>
+        <option value="11">Under 26</option>
+        <option value="12">26-34</option>
+        <option value="13">35-44</option>
+        <option value="14">45-54</option>
+        <option value="15">55-64</option>
+        <option value="16">65 and over</option>
+
+        <!-- To show households (i.e. returns):
+        <option value="3" selected>All Ages</option>
+        <option value="4">Under 26</option>
+        <option value="5">26-34</option>
+        <option value="6">35-44</option>
+        <option value="7">45-54</option>
+        <option value="8">55-64</option>
+        <option value="9">65 and over</option>
+        -->
+
+      </select>
+    </form>
+    <p class="table-notes">
+      Notes: Data are measured using tax exemptions, which approximate individuals. 
+      <br/>
+      Source: JCHS tabulations of IRS, SOI Migration Data.
+    </p>
+
+  </div>
 </div>
-
 
 <!-- jQuery (for additional interactive features) -->
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
