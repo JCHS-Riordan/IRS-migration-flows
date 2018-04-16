@@ -55,7 +55,8 @@ function createMap() {
       chart: {
         //height: 600,
         //width: 800,
-        margin: [50, 5, 60, 5],
+        margin: [35, 0, 60, 0],
+        spacingTop: 0,
         borderWidth: 0,
         events: {
           load: function() {
@@ -113,8 +114,26 @@ function createMap() {
         }*/
       },
 
-      mapNavigation: {
-        enabled: true
+      mapNavigation: { 
+        enabled: true,
+        buttonOptions: {
+          align: 'right',
+          verticalAlign: 'bottom',
+          width: 8,
+          height: 13,
+          style: {
+            fontSize: '12px'
+          }
+        },
+        buttons: {
+          zoomIn: {
+            y: 35
+          },
+          zoomOut: {
+            y: 35,
+            x: -18
+          }
+        }
       },
 
       colorAxis: {
@@ -199,7 +218,7 @@ function createMap() {
 
       /*~~~~~~Exporting options~~~~~~*/
       exporting: {
-        enabled: true,
+        enabled: false,
         filename: "Highmaps test",
         menuItemDefinitions: {
           downloadFullData: {
@@ -235,7 +254,7 @@ function createMap() {
 
 $('#year_slider').on('change', function () {
   selected_year = $('#year_slider').val()
-  changeData()
+  changeData(false)
 })
 
 $('#select_age').on('change', function () {
@@ -245,10 +264,10 @@ $('#select_age').on('change', function () {
   } else {
     map.update({colorAxis: {min: -200000, max: 200000}})
   }
-  changeData()
+  changeData(true)
 })
 
-function changeData () {
+function changeData (changeLineChart) {
   var new_data = []
 
   ref_data
@@ -273,20 +292,30 @@ function changeData () {
 
     ref_data.forEach(function (el) {
       if (el[1] == GEOID) {
-        new_line_data.push( {y: el[selected_age_idx], x: el[0]} )
-
-        if (el[0] == selected_year) {
-          el.slice(11,17).map(x => new_chart_data.push(x))
-        } //end if
-
+        if (changeLineChart === true) {
+          new_line_data.push( {y: el[selected_age_idx], x: el[0]} )
+        } else {
+          if (el[0] == selected_year) {
+            el.slice(11,17).map(x => new_chart_data.push(x))
+          } //end if
+        }
       } //end if
     }) //end forEach
-    
-    timeSeriesChart.series[0].update({name: 'Net Flow' + '<br/><span style="font-size: 10px; font-weight: normal;">' + $('#select_age :selected').html() + '</span>'})
-    timeSeriesChart.series[0].setData(new_line_data)
-    ageGroupChart.series[0].setData(new_chart_data)
 
-    $('#drilldown_title').html(state_name + ', ' + selected_year)
+    if (changeLineChart === true) {
+      timeSeriesChart.series[0].update({label: {enabled: false}})
+      timeSeriesChart.series[0].update({
+        name: 'Net Flow' + '<br/><span style="font-size: 10px; font-weight: normal;">' + $('#select_age :selected').html() + '</span>', 
+        label: {enabled: true}
+      })
+      timeSeriesChart.series[0].setData(new_line_data)
+    
+    } else {
+      ageGroupChart.series[0].setData(new_chart_data)
+      $('#drilldown_title').html(state_name + ', ' + selected_year)
+
+    }
+
 
   }
 
@@ -428,7 +457,7 @@ function drilldownState (GEOID, state_name) {
 
   //add button to clear the selection
   if (!$('#clear_button').length) {
-    map.renderer.button('Clear<br />selection',430,300)
+    map.renderer.button('Clear<br />selection',440,255)
       .attr({
       padding: 3,
       id: 'clear_button'
@@ -440,7 +469,7 @@ function drilldownState (GEOID, state_name) {
 
       $('#clear_button').remove()
       $('#drilldown_title').html('')
-      $('#age_group_chart').append('<h4 class="map-instructions">Click on a state to see age groups and change over time</h4>')
+      $('#age_group_chart').append('<h4 class="map-instructions">Click on a state to see age groups<br>and change over time ==></h4>')
 
       timeSeriesChart.destroy()
       ageGroupChart.destroy()
