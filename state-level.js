@@ -237,15 +237,13 @@ $('#year_slider').on('change', function () {
   selected_year = $('#year_slider').val()
   changeData()
 })
-        
+
 $('#select_age').on('change', function () {
   selected_age_idx = $('#select_age').val()
   if (selected_age_idx != 10) {
-    map.update({colorAxis: {min: -50000, max: 50000}})
+    map.update({colorAxis: {min: -40000, max: 40000}})
   } else {
-    {
     map.update({colorAxis: {min: -200000, max: 200000}})
-  }
   }
   changeData()
 })
@@ -264,22 +262,30 @@ function changeData () {
   map.title.update({text: 'Domestic Migration: Net Flows<br/><span style="font-size: 15px;">' + selected_year + '</span>' })
 
 
-  //change drilldown chart, if it exists
+  //change drilldown charts, if they exists
   if (typeof ageGroupChart !== 'undefined') {
 
     var GEOID = map.getSelectedPoints()[0].GEOID
     var state_name = map.getSelectedPoints()[0].name
+
     var new_chart_data = []
+    var new_line_data = []
 
-    ref_data
-      .filter(filter_val => filter_val[0] == selected_year)
-      .forEach(function (val, idx) {
-      if (val[1] == GEOID) {
-        val.slice(11,17).map(x => new_chart_data.push(x))
+    ref_data.forEach(function (el) {
+      if (el[1] == GEOID) {
+        new_line_data.push( {y: el[selected_age_idx], x: el[0]} )
+
+        if (el[0] == selected_year) {
+          el.slice(11,17).map(x => new_chart_data.push(x))
+        } //end if
+
       } //end if
-    })
-
+    }) //end forEach
+    
+    timeSeriesChart.series[0].update({name: 'Net Flow' + '<br/><span style="font-size: 10px; font-weight: normal;">' + $('#select_age :selected').html() + '</span>'})
+    timeSeriesChart.series[0].setData(new_line_data)
     ageGroupChart.series[0].setData(new_chart_data)
+
     $('#drilldown_title').html(state_name + ', ' + selected_year)
 
   }
@@ -311,13 +317,13 @@ function drilldownState (GEOID, state_name) {
 
   ref_data.forEach(function (el) {
     if (el[1] == GEOID) {
-      line_data.push( {y: el[10], x: el[0]} )
+      line_data.push( {y: el[selected_age_idx], x: el[0]} )
 
       if (el[0] == selected_year) {
         el.slice(11,17).map(x => chart_data.push(x))
       } //end if
     } //end if
-  }) //edn forEach
+  }) //end forEach
 
   ageGroupChart = Highcharts.chart('age_group_chart', {
     chart: {
@@ -399,9 +405,9 @@ function drilldownState (GEOID, state_name) {
     exporting: { enabled: false },
 
     series: [{
-      name: 'Net Flow',
+      name: 'Net Flow' + '<br/><span style="font-size: 10px; font-weight: normal;">' + $('#select_age :selected').html() + '</span>',
       data: line_data,
-      color: '#777',
+      color: '#555',
 
       zones: [
         {
@@ -434,10 +440,11 @@ function drilldownState (GEOID, state_name) {
 
       $('#clear_button').remove()
       $('#drilldown_title').html('')
-      $('#age_group_chart').append('<h4>Click on a state to see age groups and change over time</h4>')
+      $('#age_group_chart').append('<h4 class="map-instructions">Click on a state to see age groups and change over time</h4>')
 
       timeSeriesChart.destroy()
       ageGroupChart.destroy()
+
     })
   }
 
