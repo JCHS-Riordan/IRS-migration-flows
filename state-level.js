@@ -1,15 +1,19 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~ https://api.highcharts.com/highmaps/ ~~~~*/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-cbsas = Highcharts.geojson(Highcharts.maps['countries/us/cbsa'])
-states = Highcharts.geojson(Highcharts.maps['countries/us/states'])
-logoURL = 'http://www.jchs.harvard.edu/sites/jchs.harvard.edu/files/harvard_jchs_logo_2017.png'
+var states = Highcharts.geojson(Highcharts.maps['countries/us/states'])
+var logoURL = 'http://www.jchs.harvard.edu/sites/jchs.harvard.edu/files/harvard_jchs_logo_2017.png'
+
+var map = {}
+var ageGroupChart = {}
+var timeSeriesChart = {}
 
 var ref_data = []
 var data = []
-var categories = []
+
 var selected_year = "2016"
 var selected_age_idx = 10
+
 
 $(document).ready(function() {
   createMap()
@@ -17,28 +21,28 @@ $(document).ready(function() {
 
 function createMap() {
   //Google Sheet API request
-  SheetID = '17F6y8EbXSKf4iTsWnw1rqNWDUZqh2jYX0hFP8MkVndI'
-  range = 'Sheet1!A:Q'
-  baseURL = 'https://sheets.googleapis.com/v4/spreadsheets/'
-  API_Key = 'AIzaSyDY_gHLV0A7liVYq64RxH7f7IYUKF15sOQ'
-  API_params = 'valueRenderOption=UNFORMATTED_VALUE'
-  requestURL = baseURL + SheetID + '/values/' + range + '?key=' + API_Key + '&' + API_params
+  var SheetID = '17F6y8EbXSKf4iTsWnw1rqNWDUZqh2jYX0hFP8MkVndI'
+  var range = 'Sheet1!A:Q'
+  var baseURL = 'https://sheets.googleapis.com/v4/spreadsheets/'
+  var API_Key = 'AIzaSyDY_gHLV0A7liVYq64RxH7f7IYUKF15sOQ'
+  var API_params = 'valueRenderOption=UNFORMATTED_VALUE'
+  var requestURL = baseURL + SheetID + '/values/' + range + '?key=' + API_Key + '&' + API_params
 
   $.get(requestURL, function(obj) {
     console.log(requestURL)
 
     ref_data = obj.values
-    console.log(ref_data[0]) //column gheaders
+    console.log(ref_data[0]) //column headers
 
     data = ref_data
-      .filter(filter_val => filter_val[0] === 2016)
-      .map(function (val, idx) {
+      .filter(function (x) { return x[0] === 2016 })
+      .map(function (val) {
       return [val[1],val[10]]
     })
 
-    column_name = data[0][1]
-    $('.year_label').html(column_name)
+    $('.year_label').html(data[0][1])
 
+    
     Highcharts.setOptions({
       lang: {
         thousandsSep: ",",
@@ -49,36 +53,18 @@ function createMap() {
       }
     })
 
-
+    
     // Create the chart 
     map = Highcharts.mapChart('state_migration_map', {
       chart: {
-        //height: 600,
-        //width: 800,
         margin: [35, 0, 60, 0],
         spacingTop: 0,
         borderWidth: 0,
         events: {
           load: function() {
-            this.renderer.image(logoURL,this.chartWidth-204,this.chartHeight-58,221,65).add() // (src,x,y,width,height)
+            this.renderer.image(logoURL, this.chartWidth-204, this.chartHeight-58, 221 ,65).add()
           },
         },
-      },
-
-      credits: { enabled: false },
-
-      subtitle: {
-        //use subtitle element for our table notes
-        text: null,
-        widthAdjust: -300,
-        align: 'left',
-        x: 300,
-        y: 0,
-        verticalAlign: 'bottom',
-        style: {
-          color: '#999999',
-          fontSize: '9px'
-        }
       },
 
       title: {
@@ -98,20 +84,8 @@ function createMap() {
         align: 'left',
         verticalAlign: 'bottom',
         y: 23,
-        //x: 10,
         symbolWidth: 280,
         backgroundColor: 'rgba(255, 255, 255, 0.0)',
-        //reversed: true,
-        /*labelFormatter: function () {
-          if (!this.from & this.from != 0) {
-            return 'Lower than ' + this.to
-          } else if (!this.to & this.to != 0) {
-            return 'More than ' + this.from
-          } else {
-            return this.from + ' to ' + this.to
-          }
-          //return this.from  + ' to ' + this.to ;
-        }*/
       },
 
       mapNavigation: { 
@@ -146,23 +120,6 @@ function createMap() {
         ],
         min: -200000,
         max: 200000,
-        /*dataClasses: [
-          {
-            to: -1000,
-            color: '#900404'
-          }, {
-            from: -1000,
-            to: 0,
-            color: '#D93B26'
-          }, {
-            from: 0,
-            to: 1000,
-            color: '#ABBFC3'
-          }, {
-            from: 1000,
-            color: '#4E7686'
-          }
-        ],*/
       },
 
       series: [
@@ -170,7 +127,7 @@ function createMap() {
           type: 'map',
           name: 'Net Flows',
           mapData: states,
-          //allAreas: true,
+          allAreas: true,
           allowPointSelect: true,
           states: {
             select: { color: "#222" } //highlights selected county
@@ -178,101 +135,172 @@ function createMap() {
           data: data,
           joinBy: ['GEOID', 0],
           keys: ['GEOID', 'value'],
-          ///color: '#333',
-          lineWidth: 2,
+          borderWidth: 1,
+          borderColor: '#fff',
           point: {
             events: {
               click: function (event) {
-                //console.log(event)
                 console.log('clicked on map: ' + event.point.name)
                 drilldownState(event.point.GEOID, event.point.name)
-              },
-              mouseOver: function (event) {
-                //console.log(event)
-                //console.log('moused over: ' + event.target.name)
-                //drilldownState(event.target.GEOID, event.target.name)
-
-              },
-              select: function (event) {
-                //console.log(event)
-                //console.log('selected on map: ' + event.point.name)
-                //drilldownState(event.point.GEOID, event.point.name)
-              },
+              }
             },
           }
-        }, /*{
-          type: 'mapline',
-          name: 'State borders',
-          data: states,
-          enableMouseTracking: false
-        }*/
+        }
       ],
 
       tooltip: {
         useHTML: true,
         padding: 1,
-        backgroundColor: 'rgba(247,247,247,1)',
-        //formatter: 
+        backgroundColor: 'rgba(247,247,247,1)'
       }, //end tooltip
 
-
-      /*~~~~~~Exporting options~~~~~~*/
-      exporting: {
-        enabled: false,
-        filename: "Highmaps test",
-        menuItemDefinitions: {
-          downloadFullData: {
-            text: 'Download full dataset (Excel)',
-            onclick: function () {
-              window.open('http://www.jchs.harvard.edu/sites/jchs.harvard.edu/files/all_son_2017_tables_current_6_12_17.xlsx')
-              alert('See tab A-1 for data from this chart')
-            }
-          }
-        },
-        buttons: {
-          contextButton: {
-            text: 'Export',
-            menuItems: [
-              'printChart',
-              'downloadPDF',
-              'separator',
-              'downloadPNG',
-              'downloadJPEG',
-              //'separator',
-              //'downloadFullData'
-            ],
-            theme: {
-              fill: '#ffffff00'
-            }
-          }
-        }
-      } //end exporting options
+      subtitle: { text: null },
+      credits: { enabled: false },
+      exporting: { enabled: false }
+      
     }) //end Hicharts.mapChart
   }) //end get request callback
 } //end createMap()
 
 
-$('#year_slider').on('change', function () {
-  selected_year = $('#year_slider').val()
-  changeData(false)
-})
+/*~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+function drilldownState (GEOID, state_name) {
+  $('#drilldown_title').html(state_name + ', ' + selected_year)
 
-$('#select_age').on('change', function () {
-  selected_age_idx = $('#select_age').val()
-  if (selected_age_idx != 10) {
-    map.update({colorAxis: {min: -40000, max: 40000}})
-  } else {
-    map.update({colorAxis: {min: -200000, max: 200000}})
+  var chart_data = []
+  var line_data = []
+
+  ref_data.forEach(function (el) {
+    if (el[1] == GEOID) {
+      if (el[0] == selected_year) {
+        el.slice(11,17).map(function (x) {
+          chart_data.push(x)
+        })
+      } //end if
+      line_data.push( {y: el[selected_age_idx], x: el[0]} )
+    } //end if
+  }) //end forEach
+
+  ageGroupChart = Highcharts.chart('age_group_chart', {
+    chart: {
+      type: 'column',
+      spacingTop: 0,
+      marginTop: 15,
+      spacingBottom: 0,
+      spacingRight: 11,
+      marginLeft: 50,
+      borderWidth: 0
+    },
+
+    xAxis: {
+      categories: ['<26', '26-34', '35-44', '45-54', '55-64', '65+'],
+      labels: { overflow: false },
+      tickInterval: 1,
+      tickLength: 0,
+    },
+
+    series: [{
+      name: 'Net Flow',
+      data: chart_data,
+      zones: [
+        {
+          value: 0,
+          color: '#AF3C31'
+        }, {
+          color: '#4E7686' 
+        },
+      ],
+    }], //end series
+
+    title: { text: null },
+    yAxis: { title: { text: null } },
+    credits: { enabled: false },
+    legend: { enabled: false },
+    exporting: { enabled: false }
+
+  }) //end column chart
+
+
+  timeSeriesChart = Highcharts.chart('time_series_chart', {
+    chart: {
+      type: 'line',
+      spacingTop: 0,
+      marginTop: 25,
+      spacingBottom: -3,
+      spacingRight: 11,
+      marginLeft: 50,
+      borderWidth: 0
+    },
+
+    xAxis: {
+      labels: {
+        overflow: false
+      },
+      tickInterval: 1,
+      tickLength: 0
+
+    },
+
+    series: [{
+      name: 'Net Flow' 
+        + '<br/><span style="font-size: 10px; font-weight: normal;">' 
+        + $('#select_age :selected').html() 
+        + '</span>',
+      data: line_data,
+      color: '#555',
+
+      zones: [
+        {
+          value: -15000,
+          color: '#AF3C31'
+        }, {
+          value: 0,
+          color: '#E87171'
+        }, {
+          value: 15000,
+          color: '#68CBC0'
+        }, {
+          color: '#4E7686'
+        }
+      ],
+    }], //end series
+
+    title: { text: null },
+    yAxis: { title: { text: null } },
+    credits: { enabled: false },
+    legend: { enabled: false },
+    exporting: { enabled: false }
+  }) //end line chart
+
+  //add button to clear the selection
+  if (!$('#clear_button').length) {
+    map.renderer.button('Clear<br />selection',440,255)
+      .attr({
+      padding: 3,
+      id: 'clear_button'
+    }).add()
+
+    $('#clear_button').click(function () { 
+      map.series[0].data[map.getSelectedPoints()[0].index].select()
+
+      $('#clear_button').remove()
+      $('#drilldown_title').html('')
+      $('#age_group_chart').append('<h4 class="map-instructions">Click on a state to see age groups<br>and change over time ➞</h4>')
+
+      timeSeriesChart.destroy()
+      ageGroupChart.destroy()
+    })
   }
-  changeData(true)
-})
+
+} // end drilldownState()
+
 
 function changeData (changeLineChart) {
   var new_data = []
 
   ref_data
-    .filter(filter_val => filter_val[0] == selected_year)
-    .forEach(function (val, idx) {
+    .filter(function (x) { return x[0] == selected_year })
+    .forEach(function (val) {
     new_data.push([val[1],val[selected_age_idx]])
   })
 
@@ -296,7 +324,7 @@ function changeData (changeLineChart) {
           new_line_data.push( {y: el[selected_age_idx], x: el[0]} )
         } else {
           if (el[0] == selected_year) {
-            el.slice(11,17).map(x => new_chart_data.push(x))
+            el.slice(11,17).map(function (x) { new_chart_data.push(x) })
           } //end if
         }
       } //end if
@@ -313,169 +341,31 @@ function changeData (changeLineChart) {
     } else {
       ageGroupChart.series[0].setData(new_chart_data)
       $('#drilldown_title').html(state_name + ', ' + selected_year)
+    } //end if
+  } //end if (drilldown update)
+} //end changeData()
 
-    }
-
-
+/*~~~~~~~~ User interaction ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+$('#select_age').on('change', function () {
+  selected_age_idx = $('#select_age').val()
+  if (selected_age_idx != 10) {
+    map.update({colorAxis: {min: -40000, max: 40000}})
+  } else {
+    map.update({colorAxis: {min: -200000, max: 200000}})
   }
+  changeData(true)
+})
 
-}
+$('#year_slider').on('change', function () {
+  selected_year = $('#year_slider').val()
+  changeData(false)
+})
 
-$('#year_slider').mousedown(function () {
-  $('#year_label').removeClass('hidden')
-});
-
-$('#year_slider').mouseup(function () {
-  $('#year_label').addClass('hidden')
+$('#year_slider').on('mousedown mouseup', function () {
+  $('#year_label').toggleClass('hidden')
 });
 
 //for cross-browser compatibility on slider drag
 $("#year_slider").on('input', function () {
   $(this).trigger('change');
 });
-
-
-
-function drilldownState (GEOID, state_name) {
-  console.log(GEOID + ' ' + state_name)
-
-  $('#drilldown_title').html(state_name + ', ' + selected_year)
-
-  var chart_data = []
-  var line_data = []
-
-  ref_data.forEach(function (el) {
-    if (el[1] == GEOID) {
-      line_data.push( {y: el[selected_age_idx], x: el[0]} )
-
-      if (el[0] == selected_year) {
-        el.slice(11,17).map(x => chart_data.push(x))
-      } //end if
-    } //end if
-  }) //end forEach
-
-  ageGroupChart = Highcharts.chart('age_group_chart', {
-    chart: {
-      type: 'column',
-      spacingTop: 0,
-      marginTop: 15,
-      spacingBottom: 0,
-      spacingRight: 11,
-      marginLeft: 50,
-      borderWidth: 0
-    },
-
-    title: {
-      text: null
-    },
-
-    xAxis: {
-      categories: ['<26', '26-34', '35-44', '45-54', '55-64', '65+'],
-      labels: { overflow: false },
-      tickInterval: 1,
-      tickLength: 0,
-    },
-
-    yAxis: {
-      title: {
-        text: null
-      }
-    },
-
-    credits: { enabled: false },
-    legend: { enabled: false },
-    exporting: { enabled: false },
-
-    series: [{
-      name: 'Net Flow',
-      data: chart_data,
-      zones: [
-        {
-          value: 0,
-          color: '#AF3C31'
-        }, {
-          color: '#4E7686' 
-        },
-      ],
-    }] //end series
-  }) //end column chart
-
-
-  timeSeriesChart = Highcharts.chart('time_series_chart', {
-    chart: {
-      type: 'line',
-      spacingTop: 0,
-      marginTop: 25,
-      spacingBottom: -3,
-      spacingRight: 11,
-      marginLeft: 50,
-      borderWidth: 0
-    },
-
-    title: { text: null },
-
-    xAxis: {
-      labels: {
-        overflow: false
-      },
-      tickInterval: 1,
-      tickLength: 0
-
-    },
-
-    yAxis: {
-      title: {
-        text: null
-      }
-    },
-
-    credits: { enabled: false },
-    legend: { enabled: false },
-    exporting: { enabled: false },
-
-    series: [{
-      name: 'Net Flow' + '<br/><span style="font-size: 10px; font-weight: normal;">' + $('#select_age :selected').html() + '</span>',
-      data: line_data,
-      color: '#555',
-
-      zones: [
-        {
-          value: -15000,
-          color: '#AF3C31'
-        }, {
-          value: 0,
-          color: '#E87171'
-        }, {
-          value: 15000,
-          color: '#68CBC0'
-        }, {
-          color: '#4E7686'
-        }
-      ],
-    }] //end series
-  }) //end line chart
-
-  //add button to clear the selection
-  if (!$('#clear_button').length) {
-    map.renderer.button('Clear<br />selection',440,255)
-      .attr({
-      padding: 3,
-      id: 'clear_button'
-    })
-      .add()
-
-    $('#clear_button').click(function () { 
-      map.series[0].data[map.getSelectedPoints()[0].index].select()
-
-      $('#clear_button').remove()
-      $('#drilldown_title').html('')
-      $('#age_group_chart').append('<h4 class="map-instructions">Click on a state to see age groups<br>and change over time ==></h4>')
-
-      timeSeriesChart.destroy()
-      ageGroupChart.destroy()
-
-    })
-  }
-
-} // end drilldownState()
-
