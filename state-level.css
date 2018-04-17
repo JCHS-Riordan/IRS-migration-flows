@@ -65,15 +65,14 @@
 
 /*~~~~~~~~~~~~~ Year Slider ~~~~~~~~~~~~~~~~*/
 #year_slider {
-  margin: 20px auto 10px auto;
-  /*margin-left: 400px;*/
+  margin: 20px 0px 5px 100px;
   -webkit-appearance: none;
   width: 300px;
   height: 15px;
   border-radius: 3px;
   background: #E4DCD5;
   outline: none;
-  display: block;
+  display: inline-block;
 }
 
 #year_slider::-webkit-slider-thumb {
@@ -101,12 +100,7 @@
   font-family: sans-serif;
   color: rgba(100,100,100,0.9);
   font-size: 1.25em;
-  /*margin: 15px auto;*/
-  position: fixed;
-  left: 50%;
-  margin-left: 155px;
-  margin-top: -29px;
-
+  display: inline;
 }
 
 .hidden {
