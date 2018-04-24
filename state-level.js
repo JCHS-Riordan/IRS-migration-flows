@@ -130,7 +130,8 @@ function createMap() {
           allAreas: true,
           allowPointSelect: true,
           states: {
-            select: { color: "#222" } //highlights selected county
+            hover: {color: '#888'},
+            select: { color: '#222' } //highlights selected county
           },
           data: data,
           joinBy: ['GEOID', 0],
@@ -139,9 +140,9 @@ function createMap() {
           borderColor: '#fff',
           point: {
             events: {
-              click: function (event) {
-                console.log('clicked on map: ' + event.point.name)
-                drilldownState(event.point.GEOID, event.point.name)
+              select: function (event) {
+                console.log('clicked on map: ' + event.target.name)
+                drilldownState(event.target.GEOID, event.target.name)
               }
             },
           }
@@ -280,19 +281,26 @@ function drilldownState (GEOID, state_name) {
       id: 'clear_button'
     }).add()
 
-    $('#clear_button').click(function () { 
-      map.series[0].data[map.getSelectedPoints()[0].index].select()
-
-      $('#clear_button').remove()
-      $('#drilldown_title').html('')
-      $('#age_group_chart').append('<h4 class="map-instructions">Click on a state to see age groups<br>and change over time ➞</h4>')
-
-      timeSeriesChart.destroy()
-      ageGroupChart.destroy()
-    })
+    $('#clear_button').click(clearSelection)
   }
 
 } // end drilldownState()
+
+
+function clearSelection () {
+  if (map.getSelectedPoints().length > 0) {
+    map.getSelectedPoints().forEach(function (x) {
+      map.series[0].data[x.index].select(false)
+    })
+  }
+  
+  $('#clear_button').remove()
+  $('#drilldown_title').html('')
+  $('#age_group_chart').append('<h4 class="map-instructions">Click on a state to see age groups<br>and change over time ➞</h4>')
+
+  timeSeriesChart.destroy()
+  ageGroupChart.destroy()
+}
 
 
 function changeData (changeLineChart) {
