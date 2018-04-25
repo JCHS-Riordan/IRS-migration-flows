@@ -130,7 +130,8 @@ function createMap() {
           allAreas: true,
           allowPointSelect: true,
           states: {
-            select: { color: "#222" } //highlights selected county
+            hover: {color: '#888'},
+            select: { color: '#222' } //highlights selected county
           },
           data: data,
           joinBy: ['GEOID', 0],
@@ -139,9 +140,91 @@ function createMap() {
           borderColor: '#fff',
           point: {
             events: {
-              click: function (event) {
-                console.log('clicked on map: ' + event.point.name)
-                drilldownState(event.point.GEOID, event.point.name)
+              select: function (event) {
+                console.log('clicked on map: ' + event.target.name)
+                console.log(event)
+                if (event.accumulate == false) {
+                  drilldownState(event.target.GEOID, event.target.name)
+                } else if (map.getSelectedPoints().length > 1) {
+                  clearSelection()
+                  map.series[0].data[map.getSelectedPoints()[0].index].select(false)
+
+                } else {
+                  //add state to drilldown charts
+                  var chart_data = []
+                  var line_data = []
+
+                  ref_data.forEach(function (el) {
+                    if (el[1] == event.target.GEOID) {
+                      if (el[0] == selected_year) {
+                        el.slice(11,17).map(function (x) {
+                          chart_data.push(x)
+                        })
+                      } //end if
+                      line_data.push( {y: el[selected_age_idx], x: el[0]} )
+
+                    } //end if
+                  }) //end forEach
+                  timeSeriesChart.addSeries({
+                    data: line_data, 
+                    name: event.target.name,
+                    color: '#333',
+                    zones: [
+                      {
+                        value: -15000,
+                        color: '#AF3C31'
+                      }, {
+                        value: 0,
+                        color: '#E87171'
+                      }, {
+                        value: 15000,
+                        color: '#68CBC0'
+                      }, {
+                        color: '#4E7686'
+                      }
+                    ],
+                  })
+                  timeSeriesChart.series[0].update({
+                    label: {
+                      enabled: false
+                    }}, false)
+                  timeSeriesChart.update({
+                    credits: {
+                      enabled: true, 
+                      text: 'Net Flows: ' + $('#select_age :selected').html(),
+                      position: { 
+                        verticalAlign: 'top',
+                        y: 21
+                      }
+                    }
+                  }, false)
+                  timeSeriesChart.series[0].update({
+                    name: map.getSelectedPoints()[0].name, 
+                    label: { enabled: true}
+                  })
+
+                  ageGroupChart.addSeries({
+                    data: chart_data, 
+                    name: event.target.name
+                  })
+                  ageGroupChart.update({
+                    legend: {
+                      enabled: true, 
+                      margin: 5,
+                      padding: 0,
+                      maxHeight: 16
+                    }
+                  })
+                  ageGroupChart.series[0].update({
+                    name: map.getSelectedPoints()[0].name,
+                    color: '#a4b',
+                    zones: null
+                  })
+
+                  $('#drilldown_title').html(selected_year)
+
+                }
+
               }
             },
           }
@@ -280,19 +363,26 @@ function drilldownState (GEOID, state_name) {
       id: 'clear_button'
     }).add()
 
-    $('#clear_button').click(function () { 
-      map.series[0].data[map.getSelectedPoints()[0].index].select()
-
-      $('#clear_button').remove()
-      $('#drilldown_title').html('')
-      $('#age_group_chart').append('<h4 class="map-instructions">Click on a state to see age groups<br>and change over time ➞</h4>')
-
-      timeSeriesChart.destroy()
-      ageGroupChart.destroy()
-    })
+    $('#clear_button').click(clearSelection)
   }
 
 } // end drilldownState()
+
+
+function clearSelection () {
+  if (map.getSelectedPoints().length > 0) {
+    map.getSelectedPoints().forEach(function (x) {
+      map.series[0].data[x.index].select(false)
+    })
+  }
+  
+  $('#clear_button').remove()
+  $('#drilldown_title').html('')
+  $('#age_group_chart').append('<h4 class="map-instructions">Click on a state to see age groups<br>and change over time ➞</h4>')
+
+  timeSeriesChart.destroy()
+  ageGroupChart.destroy()
+}
 
 
 function changeData (changeLineChart) {
