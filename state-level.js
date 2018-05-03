@@ -15,11 +15,12 @@ var selected_year = "2016"
 var selected_age_idx = 10
 
 var map_legend_stops = [
-    [0.1, '#AF3C31'], //Originally c4463a
-    [0.4, '#E87171'],
-    [0.52, '#D7F3F0'], //Originally fffbbc
-    [0.9, '#1E328E'] //Originally 3060cf
-  ]
+  [0.1, '#AF3C31'],
+  [0.47, '#E87171'],
+  [0.5, '#fff'],
+  [0.505, '#D7F3F0'],
+  [0.9, '#1E328E']
+]
 
 var line_chart_zones = [
   {
