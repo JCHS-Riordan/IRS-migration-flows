@@ -50,15 +50,11 @@ Highcharts.setOptions({
   colors: ['#4E7686', '#998b7d', '#c14d00', '#43273a', '#e9c002', '#76ad99', '#c4c6a6'],
   subtitle: { text: null },
   credits: { enabled: false },
-  exporting: { enabled: true },
+  exporting: { enabled: false },
   lang: { thousandsSep: "," }
 }) //end standard options
 
 $(document).ready(function() {
-  createMap()
-})
-
-function createMap() {
   //Google Sheet API request
   var SheetID = '17F6y8EbXSKf4iTsWnw1rqNWDUZqh2jYX0hFP8MkVndI'
   var range = 'Sheet1!A:Q'
@@ -81,113 +77,120 @@ function createMap() {
 
     $('.year_label').html(data[0][1])
 
-    // Create the chart 
-    map = Highcharts.mapChart('state_migration_map', {
-      chart: {
-        margin: [35, 0, 60, 0],
-        spacingTop: 0,
-        borderWidth: 0,
-        events: {
-          load: function() {
-            this.renderer.image(logoURL, this.chartWidth-204, this.chartHeight-58, 221 ,65).add()
-          },
+    createMap()
+    
+  }) //end get request
+}) //end document.ready
+
+function createMap() {
+
+  // Create the chart 
+  map = Highcharts.mapChart('state_migration_map', {
+    chart: {
+      margin: [35, 0, 60, 0],
+      spacingTop: 0,
+      borderWidth: 0,
+      events: {
+        load: function() {
+          this.renderer.image(logoURL, this.chartWidth-204, this.chartHeight-58, 221 ,65).add()
         },
       },
+    },
 
+    title: {
+      text: 'Domestic Migration: Net Flows<br/><span style="font-size: 15px;">' + $('#select_age :selected').html() + ', 2016' + '</span>',
+      style: {
+        color: '#C14D00',
+        fontWeight: 600,
+        fontSize: '19px'
+      }
+    },
+
+    legend: {
       title: {
-        text: 'Domestic Migration: Net Flows<br/><span style="font-size: 15px;">' + $('#select_age :selected').html() + ', 2016' + '</span>',
-        style: {
-          color: '#C14D00',
-          fontWeight: 600,
-          fontSize: '19px'
-        }
+        text: 'Net flow of individuals'  
       },
+      layout: 'horizontal',
+      align: 'left',
+      verticalAlign: 'bottom',
+      y: 23,
+      symbolWidth: 280,
+      backgroundColor: 'rgba(255, 255, 255, 0.0)',
+    },
 
-      legend: {
-        title: {
-          text: 'Net flow of individuals'  
-        },
-        layout: 'horizontal',
-        align: 'left',
+    mapNavigation: { 
+      enabled: true,
+      buttonOptions: {
+        align: 'right',
         verticalAlign: 'bottom',
-        y: 23,
-        symbolWidth: 280,
-        backgroundColor: 'rgba(255, 255, 255, 0.0)',
-      },
-
-      mapNavigation: { 
-        enabled: true,
-        buttonOptions: {
-          align: 'right',
-          verticalAlign: 'bottom',
-          width: 8,
-          height: 13,
-          style: {
-            fontSize: '12px'
-          }
-        },
-        buttons: {
-          zoomIn: {
-            y: 35
-          },
-          zoomOut: {
-            y: 35,
-            x: -18
-          }
+        width: 8,
+        height: 13,
+        style: {
+          fontSize: '12px'
         }
       },
-
-      colorAxis: {
-        type: 'linear',
-        stops: map_legend_stops,
-        min: -200000,
-        max: 200000,
-      },
-
-      series: [{
-        type: 'map',
-        name: 'Net Flows',
-        mapData: states,
-        allAreas: true,
-        allowPointSelect: true,
-        states: {
-          hover: {color: '#888'},
-          select: { color: '#222' } //highlights selected county
+      buttons: {
+        zoomIn: {
+          y: 35
         },
-        data: data,
-        joinBy: ['GEOID', 0],
-        keys: ['GEOID', 'value'],
-        borderWidth: 1,
-        borderColor: '#eee',
-        point: {
-          events: {
-            select: function (event) {
-              console.log('clicked on map: ' + event.target.name)
-
-              if (event.accumulate == false) {
-                drilldownState(event.target.GEOID, event.target.name)
-
-              } else if (map.getSelectedPoints().length === 1) {
-                addState(event.target.GEOID, event.target.name)
-
-              } else if (map.getSelectedPoints().length > 1) {
-                clearSelection()
-                map.series[0].data[map.getSelectedPoints()[0].index].select(false)
-              } //end if
-
-            } //end event.select
-          },
+        zoomOut: {
+          y: 35,
+          x: -18
         }
-      }], //end series
+      }
+    },
 
-      tooltip: {
-        useHTML: true,
-        padding: 1,
-        backgroundColor: 'rgba(247,247,247,1)'
-      }, //end tooltip
-      
-    }) //end Hicharts.mapChart
-  }) //end get request callback
+    colorAxis: {
+      type: 'linear',
+      stops: map_legend_stops,
+      min: -200000,
+      max: 200000,
+    },
+
+    series: [{
+      type: 'map',
+      name: 'Net Flows',
+      mapData: states,
+      allAreas: true,
+      allowPointSelect: true,
+      states: {
+        hover: {color: '#888'},
+        select: { color: '#222' } //highlights selected county
+      },
+      data: data,
+      joinBy: ['GEOID', 0],
+      keys: ['GEOID', 'value'],
+      borderWidth: 1,
+      borderColor: '#eee',
+      point: {
+        events: {
+          select: function (event) {
+            console.log('clicked on map: ' + event.target.name)
+
+            if (event.accumulate == false) {
+              drilldownState(event.target.GEOID, event.target.name)
+
+            } else if (map.getSelectedPoints().length === 1) {
+              addState(event.target.GEOID, event.target.name)
+
+            } else if (map.getSelectedPoints().length > 1) {
+              clearSelection()
+              map.series[0].data[map.getSelectedPoints()[0].index].select(false)
+              
+            } //end if
+
+          } //end event.select
+        } // end events
+      } //end point
+    }], //end series
+
+    tooltip: {
+      useHTML: true,
+      padding: 1,
+      backgroundColor: 'rgba(247,247,247,1)'
+    }, //end tooltip
+
+  }) //end Hicharts.mapChart
 } //end createMap()
 
 
@@ -253,9 +256,7 @@ function drilldownState (GEOID, state_name) {
     },
 
     xAxis: {
-      labels: {
-        overflow: false
-      },
+      labels: { overflow: false },
       tickInterval: 1,
       tickLength: 0
 
@@ -267,7 +268,7 @@ function drilldownState (GEOID, state_name) {
         + $('#select_age :selected').html() 
         + '</span>',
       data: line_data,
-      color: '#555',
+      color: '#555', //label color
       zones: line_chart_zones,
       GEOID: GEOID,
       state_name: state_name
@@ -345,7 +346,7 @@ function addState(GEOID, state_name) {
     }
   }, false)
   timeSeriesChart.series[0].update({
-    name: map.getSelectedPoints()[0].name, 
+    name: timeSeriesChart.series[0].options.state_name, 
     label: { enabled: true}
   })
 
@@ -364,7 +365,7 @@ function addState(GEOID, state_name) {
     }
   })
   ageGroupChart.series[0].update({
-    name: map.getSelectedPoints()[0].name,
+    name: timeSeriesChart.series[0].options.state_name,
     //color: '#a4b',
     zones: null
   })
