@@ -50,7 +50,7 @@ Highcharts.setOptions({
   colors: ['#4E7686', '#998b7d', '#c14d00', '#43273a', '#e9c002', '#76ad99', '#c4c6a6'],
   subtitle: { text: null },
   credits: { enabled: false },
-  exporting: { enabled: false },
+  exporting: { enabled: true },
   lang: { thousandsSep: "," }
 }) //end standard options
 
@@ -95,7 +95,7 @@ function createMap() {
       },
 
       title: {
-        text: 'Domestic Migration: Net Flows<br/><span style="font-size: 15px;">' + '2016' + '</span>',
+        text: 'Domestic Migration: Net Flows<br/><span style="font-size: 15px;">' + $('#select_age :selected').html() + ', 2016' + '</span>',
         style: {
           color: '#C14D00',
           fontWeight: 600,
@@ -384,7 +384,7 @@ function changeMap () {
   })
 
   map.series[0].setData(new_map_data)
-  map.title.update({text: 'Domestic Migration: Net Flows<br/><span style="font-size: 15px;">' + selected_year + '</span>' })
+  map.title.update({text: 'Domestic Migration: Net Flows<br/><span style="font-size: 15px;">' +  $('#select_age :selected').html() + ', ' + selected_year + '</span>' })
 
   $('#year_label').html(selected_year)
   
