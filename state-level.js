@@ -56,7 +56,10 @@ Highcharts.setOptions({
 
 $(document).ready(function() {
   //Google Sheet API request
-  var SheetID = '17F6y8EbXSKf4iTsWnw1rqNWDUZqh2jYX0hFP8MkVndI'
+  var SheetID = '1olDiyrqpAmQ0KLkyZlFnfXOl61Ri-lCpE0QG-6585L4' 
+  /*Includes all years: 17F6y8EbXSKf4iTsWnw1rqNWDUZqh2jYX0hFP8MkVndI 
+  versus all years except 2015, plus 2012-2016 (no 2015) average: 
+  1olDiyrqpAmQ0KLkyZlFnfXOl61Ri-lCpE0QG-6585L4 */
   var range = 'Sheet1!A:Q'
   var baseURL = 'https://sheets.googleapis.com/v4/spreadsheets/'
   var API_Key = 'AIzaSyDY_gHLV0A7liVYq64RxH7f7IYUKF15sOQ'
@@ -257,9 +260,8 @@ function drilldownState (GEOID, state_name) {
 
     xAxis: {
       labels: { overflow: false },
-      tickInterval: 1,
+      tickInterval: 2,
       tickLength: 0
-
     },
 
     series: [{
@@ -302,7 +304,7 @@ function clearSelection () {
   
   $('#clear_button').remove()
   $('#drilldown_title').html('')
-  $('#age_group_chart').append('<h4 class="map-instructions">Click on a state to see age groups<br>and change over time ➞</h4>')
+  $('#age_group_chart').append('<h4 class="map-instructions">Click on a state to see age groups<br>and change over time  ➞<br><span id="sub_instructions">(Ctrl+click to select a comparison state)</span></h4>')
 
   timeSeriesChart.destroy()
   ageGroupChart.destroy()
@@ -437,7 +439,7 @@ function changeColumnChart () {
 
   if (ageGroupChart.series.length === 1) {
     ageGroupChart.series[0].setData(new_chart_data[0])
-    $('#drilldown_title').html(state_name + ', ' + selected_year)
+    $('#drilldown_title').html(map.getSelectedPoints()[0].name + ', ' + selected_year)
   } else {
     ageGroupChart.series[0].setData(new_chart_data[0])
     ageGroupChart.series[1].setData(new_chart_data[1])
@@ -460,7 +462,13 @@ $('#select_age').on('change', function () {
 })
 
 $('#year_slider').on('change', function () {
-  selected_year = $('#year_slider').val()
+  //selected_year = $('#year_slider').val()
+  var slider_val = $('#year_slider').val()
+  if (slider_val == 1) {selected_year = '2012'}
+  if (slider_val == 2) {selected_year = '2013'}
+  if (slider_val == 3) {selected_year = '2014'}
+  if (slider_val == 4) {selected_year = '2016'}
+
   changeMap()
   changeColumnChart()
 })
