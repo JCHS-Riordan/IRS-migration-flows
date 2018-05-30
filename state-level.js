@@ -11,7 +11,7 @@ var timeSeriesChart = {}
 var ref_data = []
 var data = []
 
-var selected_year = "2016"
+var selected_year = "2012-2016"
 var selected_age_idx = 10
 
 var map_legend_stops = [
@@ -73,7 +73,7 @@ $(document).ready(function() {
     console.log(ref_data[0]) //column headers
 
     data = ref_data
-      .filter(function (x) { return x[0] === 2016 })
+      .filter(function (x) { return x[0] === selected_year })
       .map(function (val) {
       return [val[1],val[10]]
     })
@@ -101,7 +101,7 @@ function createMap() {
     },
 
     title: {
-      text: 'Domestic Migration: Net Flows<br/><span style="font-size: 15px;">' + $('#select_age :selected').html() + ', 2016' + '</span>',
+      text: '<span style="font-size: 15px;">' + 'Domestic Migration Across States by Age: ' + $('#select_age :selected').html() + '</span>' + '<br/><span style="font-size: 14px;">' + selected_year + '</span>',
       style: {
         color: '#C14D00',
         fontWeight: 600,
@@ -111,7 +111,7 @@ function createMap() {
 
     legend: {
       title: {
-        text: 'Net flow of individuals'  
+        text: 'Annual Net Domestic Migration'  
       },
       layout: 'horizontal',
       align: 'left',
@@ -190,7 +190,8 @@ function createMap() {
     tooltip: {
       useHTML: true,
       padding: 1,
-      backgroundColor: 'rgba(247,247,247,1)'
+      backgroundColor: 'rgba(247,247,247,1)',
+      valueDecimals: 0
     }, //end tooltip
 
   }) //end Hicharts.mapChart
@@ -211,7 +212,9 @@ function drilldownState (GEOID, state_name) {
           chart_data.push(x)
         })
       } //end if
-      line_data.push( {y: el[selected_age_idx], x: el[0]} )
+      if(el[0] != '2012-2016') {
+        line_data.push( {y: el[selected_age_idx], x: el[0]} )
+      }
     } //end if
   }) //end forEach
 
@@ -241,6 +244,10 @@ function drilldownState (GEOID, state_name) {
       state_name: state_name
     }], //end series
 
+    tooltip: {
+      valueDecimals: 0  
+    }, 
+    
     title: { text: null },
     yAxis: { title: { text: null } },
     legend: { enabled: false },
@@ -323,8 +330,9 @@ function addState(GEOID, state_name) {
           chart_data.push(x)
         })
       } //end if
-      line_data.push( {y: el[selected_age_idx], x: el[0]} )
-
+      if(el[0] != '2012-2016') {
+        line_data.push( {y: el[selected_age_idx], x: el[0]} )
+      }
     } //end if
   }) //end forEach
   
@@ -385,9 +393,14 @@ function changeMap () {
     .forEach(function (val) {
     new_map_data.push([val[1],val[selected_age_idx]])
   })
-
-  map.series[0].setData(new_map_data)
-  map.title.update({text: 'Domestic Migration: Net Flows<br/><span style="font-size: 15px;">' +  $('#select_age :selected').html() + ', ' + selected_year + '</span>' })
+var selected_age = $('#select_age :selected').html()
+map.series[0].setData(new_map_data)
+  map.title.update({text: 
+    `<span style="font-size: 15px;">
+    Domestic Migration Across States by Age: ${selected_age}</span>
+    <br/>
+    <span style="font-size: 14px;">${selected_year}</span>`
+  })
 
   $('#year_label').html(selected_year)
   
@@ -399,8 +412,8 @@ function changeLineChart () {
 
   ref_data.forEach(function (el) {
     timeSeriesChart.series.forEach(function (x, idx) {
-      if (el[1] == x.options.GEOID) {
-        new_line_data[idx].push( {y: el[selected_age_idx], x: el[0]} )
+      if (el[1] == x.options.GEOID & el[0] != '2012-2016') {
+          new_line_data[idx].push( {y: el[selected_age_idx], x: el[0]} )
       }  
     }) //end if
   }) //end forEach
@@ -468,15 +481,16 @@ $('#year_slider').on('change', function () {
   if (slider_val == 2) {selected_year = '2013'}
   if (slider_val == 3) {selected_year = '2014'}
   if (slider_val == 4) {selected_year = '2016'}
+  if (slider_val == 5) {selected_year = '2012-2016'}
 
   changeMap()
   changeColumnChart()
 })
-
+/* NOTE: DM wants the year to be always visible, commenting this out -RF
 $('#year_slider').on('mousedown mouseup', function () {
   $('#year_label').toggleClass('hidden')
 });
-
+*/
 //for cross-browser compatibility on slider drag
 $("#year_slider").on('input', function () {
   $(this).trigger('change');
