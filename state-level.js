@@ -11,7 +11,7 @@ var timeSeriesChart = {}
 var ref_data = []
 var data = []
 
-var selected_year = "2012-2016"
+var selected_year = "2012-2016 Average"
 var selected_age_idx = 10
 
 var map_legend_stops = [
@@ -90,12 +90,12 @@ function createMap() {
   // Create the chart 
   map = Highcharts.mapChart('state_migration_map', {
     chart: {
-      margin: [35, 0, 60, 0],
+      margin: [35, 0, 100, 0],
       spacingTop: 0,
       borderWidth: 0,
       events: {
         load: function() {
-          this.renderer.image(logoURL, this.chartWidth-204, this.chartHeight-58, 221 ,65).add()
+          this.renderer.image(logoURL, 0, this.chartHeight-57, 210, 62).add()
         },
       },
     },
@@ -114,13 +114,28 @@ function createMap() {
         text: 'Annual Net Domestic Migration'  
       },
       layout: 'horizontal',
-      align: 'left',
+      align: 'center',
       verticalAlign: 'bottom',
-      y: 23,
+      y: -35,
       symbolWidth: 280,
       backgroundColor: 'rgba(255, 255, 255, 0.0)',
     },
 
+          subtitle: {
+        //use subtitle element for our table notes
+            text:
+            "Notes: 2015 data are excluded from the map, line chart, and 2012-2016 average due to data quality issues. Data shown are number of exemptions claimed, approximating individuals. <br/>Source: JCHS tabulations of IRS, Statistics of Income Migration Data.",
+        widthAdjust: -180,
+        align: "left",
+        x: 190,
+        y: -25, //may have to change this, depending on length of notes
+        verticalAlign: "bottom",
+        style: {
+          color: "#999999",
+          fontSize: "9px"
+        }
+      },
+    
     mapNavigation: { 
       enabled: true,
       buttonOptions: {
@@ -212,7 +227,7 @@ function drilldownState (GEOID, state_name) {
           chart_data.push(x)
         })
       } //end if
-      if(el[0] != '2012-2016') {
+      if(el[0] != '2012-2016 Average') {
         line_data.push( {y: el[selected_age_idx], x: el[0]} )
       }
     } //end if
@@ -293,7 +308,8 @@ function drilldownState (GEOID, state_name) {
     map.renderer.button('Clear<br />selection',440,255)
       .attr({
       padding: 3,
-      id: 'clear_button'
+      id: 'clear_button',
+      zIndex: 4,
     }).add()
 
     $('#clear_button').click(clearSelection)
@@ -330,7 +346,7 @@ function addState(GEOID, state_name) {
           chart_data.push(x)
         })
       } //end if
-      if(el[0] != '2012-2016') {
+      if(el[0] != '2012-2016 Average') {
         line_data.push( {y: el[selected_age_idx], x: el[0]} )
       }
     } //end if
@@ -412,7 +428,7 @@ function changeLineChart () {
 
   ref_data.forEach(function (el) {
     timeSeriesChart.series.forEach(function (x, idx) {
-      if (el[1] == x.options.GEOID & el[0] != '2012-2016') {
+      if (el[1] == x.options.GEOID & el[0] != '2012-2016 Average') {
           new_line_data[idx].push( {y: el[selected_age_idx], x: el[0]} )
       }  
     }) //end if
@@ -481,7 +497,7 @@ $('#year_slider').on('change', function () {
   if (slider_val == 2) {selected_year = '2013'}
   if (slider_val == 3) {selected_year = '2014'}
   if (slider_val == 4) {selected_year = '2016'}
-  if (slider_val == 5) {selected_year = '2012-2016'}
+  if (slider_val == 5) {selected_year = '2012-2016 Average'}
 
   changeMap()
   changeColumnChart()
