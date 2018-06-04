@@ -173,7 +173,7 @@ function createMap() {
       allowPointSelect: true,
       states: {
         hover: {color: '#888'},
-        select: { color: '#222' } //highlights selected county
+        select: { color: '#222' } //highlights selected state
       },
       data: data,
       joinBy: ['GEOID', 0],
@@ -194,9 +194,8 @@ function createMap() {
             } else if (map.getSelectedPoints().length > 1) {
               clearSelection()
               map.series[0].data[map.getSelectedPoints()[0].index].select(false)
-              
-            } //end if
 
+            } //end if
           } //end event.select
         } // end events
       } //end point
@@ -215,7 +214,7 @@ function createMap() {
 
 /*~~~~~~~~ Functions ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 function drilldownState (GEOID, state_name) {
-  $('#drilldown_title').html(state_name + ', ' + selected_year)
+  //$('#drilldown_title').html(state_name + ', ' + selected_year) //Removing b/c subtitles added 
 
   var chart_data = []
   var line_data = []
@@ -236,8 +235,8 @@ function drilldownState (GEOID, state_name) {
   ageGroupChart = Highcharts.chart('age_group_chart', {
     chart: {
       type: 'column',
-      spacingTop: 0,
-      marginTop: 15,
+      spacingTop: 10,
+      marginTop: 45,
       spacingBottom: 0,
       spacingRight: 11,
       marginLeft: 50,
@@ -249,6 +248,12 @@ function drilldownState (GEOID, state_name) {
       labels: { overflow: false },
       tickInterval: 1,
       tickLength: 0,
+      title: {
+        text: state_name,
+        style: {
+          fontWeight: 'bold'
+        }
+      }
     },
 
     series: [{
@@ -263,7 +268,12 @@ function drilldownState (GEOID, state_name) {
       valueDecimals: 0  
     }, 
     
-    title: { text: null },
+    title: { 
+      text: 'Net Flows by Age<br/>' + selected_year,
+      style: {
+        fontSize: 14
+      }
+    },
     yAxis: { title: { text: null } },
     legend: { enabled: false },
   }) //end column chart
@@ -272,11 +282,12 @@ function drilldownState (GEOID, state_name) {
   timeSeriesChart = Highcharts.chart('time_series_chart', {
     chart: {
       type: 'line',
-      spacingTop: 0,
-      marginTop: 25,
+      spacingTop: 10,
+      marginTop: 45,
       spacingBottom: -3,
       spacingRight: 11,
       marginLeft: 50,
+      marginBottom: 25,
       borderWidth: 0
     },
 
@@ -287,10 +298,7 @@ function drilldownState (GEOID, state_name) {
     },
 
     series: [{
-      name: 'Net Flow' 
-        + '<br/><span style="font-size: 10px; font-weight: normal;">' 
-        + $('#select_age :selected').html() 
-        + '</span>',
+      name: state_name,
       data: line_data,
       color: '#555', //label color
       zones: line_chart_zones,
@@ -298,7 +306,12 @@ function drilldownState (GEOID, state_name) {
       state_name: state_name
     }], //end series
 
-    title: { text: null },
+    title: { 
+      text: 'Net Flows Over Time<br/>' + $('#select_age :selected').html(),
+      style: {
+        fontSize: 14
+      }
+    },
     yAxis: { title: { text: null } },
     legend: { enabled: false },
   }) //end line chart
@@ -326,7 +339,7 @@ function clearSelection () {
   }
   
   $('#clear_button').remove()
-  $('#drilldown_title').html('')
+  //$('#drilldown_title').html('')  Removing b/c subtitles added
   $('#age_group_chart').append('<h4 class="map-instructions">Click on a state to see age groups<br>and change over time  ➞<br><span id="sub_instructions">(Ctrl+click to select a comparison state)</span></h4>')
 
   timeSeriesChart.destroy()
@@ -363,7 +376,7 @@ function addState(GEOID, state_name) {
   timeSeriesChart.series[0].update({label: {enabled: false}})
   timeSeriesChart.update({
     credits: {
-      enabled: true, 
+      enabled: false, 
       text: 'Net Flows: ' + $('#select_age :selected').html(),
       position: { 
         verticalAlign: 'top',
@@ -388,6 +401,11 @@ function addState(GEOID, state_name) {
       margin: 5,
       padding: 0,
       maxHeight: 16
+    },
+    xAxis: {
+      title: {
+        text: null
+      }
     }
   })
   ageGroupChart.series[0].update({
@@ -396,7 +414,7 @@ function addState(GEOID, state_name) {
     zones: null
   })
 
-  $('#drilldown_title').html(selected_year)
+  //$('#drilldown_title').html(selected_year)  Removing b/c subtitles added
 
 } //end addState()
 
@@ -435,21 +453,12 @@ function changeLineChart () {
   }) //end forEach
 
   if (timeSeriesChart.series.length === 1) {
-    timeSeriesChart.series[0].update({label: {enabled: false}})
-    timeSeriesChart.series[0].update({
-      name: 'Net Flow' 
-      + '<br/><span style="font-size: 10px; font-weight: normal;">' 
-      + $('#select_age :selected').html() 
-      + '</span>', 
-      label: {enabled: true}
-    })
     timeSeriesChart.series[0].setData(new_line_data[0])
   } else {
     timeSeriesChart.series[0].setData(new_line_data[0])
     timeSeriesChart.series[1].setData(new_line_data[1])
-    timeSeriesChart.update({ credits: {text: 'Net Flows: ' + $('#select_age :selected').html()} })
   } //end if
-  
+  timeSeriesChart.update({ title: {text: '<span style="font-size: 14px;"> Net Flows Over Time<br/>' + $('#select_age :selected').html() + '</span>'} })
 } //end changeLineChart()
 
 
@@ -468,13 +477,13 @@ function changeColumnChart () {
 
   if (ageGroupChart.series.length === 1) {
     ageGroupChart.series[0].setData(new_chart_data[0])
-    $('#drilldown_title').html(map.getSelectedPoints()[0].name + ', ' + selected_year)
+    //$('#drilldown_title').html(map.getSelectedPoints()[0].name + ', ' + selected_year)
   } else {
     ageGroupChart.series[0].setData(new_chart_data[0])
     ageGroupChart.series[1].setData(new_chart_data[1])
-    $('#drilldown_title').html(selected_year)
+    //$('#drilldown_title').html(selected_year)
   } //end if
-
+  ageGroupChart.update({ title: {text: '<span style="font-size: 14px;"> Net Flows by Age <br/> ' + selected_year + '</span>'} })
 } //end changeColumnChart()
 
 
