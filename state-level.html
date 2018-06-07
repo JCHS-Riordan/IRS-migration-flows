@@ -1,5 +1,5 @@
 <div id="dashboard_wrapper">
-  <div id="drilldown_title" class="drilldown title"></div>
+  <!--<div id="drilldown_title" class="drilldown title"></div>-->
   <div id="age_group_chart" class="drilldown">
     <h4 class="map-instructions">Click on a state to see age groups<br>and change over time  ➞<br><span id="sub_instructions">(Ctrl+click to select a comparison state)</span></h4>
   </div>
@@ -8,8 +8,9 @@
   <div id="map_wrapper">
     <div id="state_migration_map"></div>
 
+    <div id= "year_label">2012-2016 Average</div>
     <input id="year_slider" type="range" min=1 max=5 value=5 step=1>
-    <span id= "year_label">2012-2016</span>
+    
 
     <form class="age-form">
       <select id="select_age" class="select-age">
@@ -19,7 +20,7 @@
         <option value="13">35-44</option>
         <option value="14">45-54</option>
         <option value="15">55-64</option>
-        <option value="16">65 and over</option>
+        <option value="16">65 and Over</option>
 
         <!-- To show households (i.e. returns):
         <option value="3" selected>All Ages</option>
@@ -33,12 +34,12 @@
 
       </select>
     </form>
-    <p class="table-notes">
+    <!--<p class="table-notes">
       Notes: Data are measured using year-to-year address changes on individual income tax returns. All years are the second year of year pairings (e.g. 2012 represents 2011-2012). 2015 data are excluded from the map, line chart, and 2012-2016 average due to data quality issues in the 2014-2015 pairing. Data shown are number of exemptions claimed, which approximates individuals.
-      <br/><br/>
+      <br/>
       Source: JCHS tabulations of IRS, Statistics of Income Migration Data.
     </p>
-
+-->
   </div>
 </div>
 
