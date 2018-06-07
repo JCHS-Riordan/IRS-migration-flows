@@ -12,14 +12,39 @@ var ref_data = []
 var data = []
 
 var selected_year = "2012-2016 Average"
-var selected_age_idx = 10
+var selected_age_idx = 12
 
 var map_legend_stops = [
-  [0.1, '#AF3C31'],
-  [0.47, '#E87171'],
-  [0.5, '#fff'],
-  [0.505, '#D7F3F0'],
-  [0.9, '#1E328E']
+  [0.1, '#c14d00'],
+  [0.48, '#eab700'],
+  [0.5, '#eee'],
+  [0.52, '#b8d4ca'],
+  [0.9, '#467b91']
+]
+
+var map_legend_zones = [
+ {
+   to: -10000,
+ },
+ {
+   from: -10000,
+   to: -1000,
+ },
+  {
+    from: -1000,
+    to: 0,
+  },
+  {
+  from: 0,
+    to: 1000,
+  },
+ {
+   from: 1000,
+   to: 10000,
+ },
+  {
+    from: 10000,
+  }
 ]
 
 var line_chart_zones = [
@@ -75,7 +100,7 @@ $(document).ready(function() {
     data = ref_data
       .filter(function (x) { return x[0] === selected_year })
       .map(function (val) {
-      return [val[1],val[10]]
+      return [val[1],val[12]]
     })
 
     $('.year_label').html(data[0][1])
@@ -95,7 +120,11 @@ function createMap() {
       borderWidth: 0,
       events: {
         load: function() {
-          this.renderer.image(logoURL, 0, this.chartHeight-57, 210, 62).add()
+          this.renderer
+            .image(logoURL, 0, this.chartHeight-57, 210, 62)
+            .add()
+          
+          autoMap()
         },
       },
     },
@@ -116,7 +145,7 @@ function createMap() {
       layout: 'horizontal',
       align: 'center',
       verticalAlign: 'bottom',
-      y: -35,
+      y: -40,
       symbolWidth: 280,
       backgroundColor: 'rgba(255, 255, 255, 0.0)',
     },
@@ -124,11 +153,11 @@ function createMap() {
           subtitle: {
         //use subtitle element for our table notes
             text:
-            "Notes: 2015 data are excluded from the map, line chart, and 2012-2016 average due to data quality issues. Data shown are number of exemptions claimed, approximating individuals. <br/>Source: JCHS tabulations of IRS, Statistics of Income Migration Data.",
+            "Notes: 2015 data are excluded from the map, line chart, and 2012-2016 average due to data quality issues. Data shown are number of exemptions claimed, approximating individuals. These data do not measure, and therefore do not show, international immigration. <br/>Source: JCHS tabulations of IRS, Statistics of Income Migration Data.",
         widthAdjust: -180,
         align: "left",
         x: 190,
-        y: -25, //may have to change this, depending on length of notes
+        y: -35, //may have to change this, depending on length of notes
         verticalAlign: "bottom",
         style: {
           color: "#999999",
@@ -161,8 +190,9 @@ function createMap() {
     colorAxis: {
       type: 'linear',
       stops: map_legend_stops,
-      min: -200000,
-      max: 200000,
+     // dataClasses: map_legend_zones,
+      min: -40000,
+      max: 40000,
     },
 
     series: [{
@@ -184,16 +214,16 @@ function createMap() {
         events: {
           select: function (event) {
             console.log('clicked on map: ' + event.target.name)
-
+            var points = map.getSelectedPoints()
             if (event.accumulate == false) {
               drilldownState(event.target.GEOID, event.target.name)
 
-            } else if (map.getSelectedPoints().length === 1) {
+            } else if (points.length === 1) {
               addState(event.target.GEOID, event.target.name)
 
-            } else if (map.getSelectedPoints().length > 1) {
+            } else if (points.length > 1) {
               clearSelection()
-              map.series[0].data[map.getSelectedPoints()[0].index].select(false)
+              map.series[0].data[points[0].index].select(false)
 
             } //end if
           } //end event.select
@@ -208,6 +238,48 @@ function createMap() {
       valueDecimals: 0
     }, //end tooltip
 
+       /*~~~~~~Exporting options~~~~~~*/
+    exporting: {
+      enabled: true,
+      filename: "Domestic Migration - " + $('#select_age :selected').html() + ', ' + selected_year,
+      menuItemDefinitions: {
+        /*downloadFullData: {
+          text: 'Download full dataset (Excel)',
+          onclick: function () {
+            window.open('http://www.jchs.harvard.edu/')
+            alert('See tab A-1 for data from this chart')
+          }
+        },*/
+        viewSortableTable: {
+          text: 'View full dataset',
+          onclick: function () {
+            window.open('https://codepen.io/JCHS-Riordan/full/RyzWRO')
+          }
+        }
+      },
+      buttons: {
+        contextButton: {
+          text: 'Export',
+          menuItems: [
+            'viewSortableTable',
+            'separator',
+            'printChart',
+            'downloadPDF',
+            'separator',
+            'downloadPNG',
+            'downloadJPEG',
+            //'separator',
+            //'downloadFullData'
+          ],
+          theme: {
+            fill: '#ffffff00'
+          },
+          y: 30,
+          x: 10
+        }
+      }
+    } //end exporting
+    
   }) //end Hicharts.mapChart
 } //end createMap()
 
@@ -442,6 +514,7 @@ map.series[0].setData(new_map_data)
 
 
 function changeLineChart () {
+  if (typeof timeSeriesChart.series == 'undefined') {return}
   var new_line_data = [[],[]]
 
   ref_data.forEach(function (el) {
@@ -463,6 +536,7 @@ function changeLineChart () {
 
 
 function changeColumnChart () {
+  if (typeof ageGroupChart.series == 'undefined') {return}
   var new_chart_data = [[],[]]
 
   ref_data.forEach(function (el) {
@@ -520,3 +594,20 @@ $('#year_slider').on('mousedown mouseup', function () {
 $("#year_slider").on('input', function () {
   $(this).trigger('change');
 });
+
+$('#year_slider').click(() => clearInterval(autoMapLoop))
+
+var count = 0
+var yearsInAnimation = [1,2,3,4]
+var interval = 1250
+
+function runChange () {
+  if (count == yearsInAnimation.length) { count = 0 }
+  $('#year_slider').val(yearsInAnimation[count])
+  $('#year_slider').trigger('change')
+  count++
+}
+
+function autoMap () {
+  autoMapLoop = setInterval(runChange, interval)
+}
