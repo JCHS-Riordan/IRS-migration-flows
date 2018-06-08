@@ -214,6 +214,9 @@ function createMap() {
         events: {
           select: function (event) {
             console.log('clicked on map: ' + event.target.name)
+            
+            clearInterval(autoMapLoop)
+            
             var points = map.getSelectedPoints()
             if (event.accumulate == false) {
               drilldownState(event.target.GEOID, event.target.name)
