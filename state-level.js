@@ -241,7 +241,29 @@ function createMap() {
        /*~~~~~~Exporting options~~~~~~*/
     exporting: {
       enabled: true,
-      filename: "Domestic Migration - " + $('#select_age :selected').html() + ', ' + selected_year,
+      filename: "Domestic Migration - " + $('#select_age :selected').html() + ', ' + selected_year + " - Harvard JCHS - State of the Nation's Housing 2018",
+      sourceWidth: 500,
+      sourceHeight: 500,
+      // change options to optimize for export
+      chartOptions: {
+        title: {
+          text: "Domestic Migration Across States by Age: " + $('#select_age :selected').html() + '<br/>' + selected_year,
+          style: { 
+            fontSize: '16px',
+            fontWeight: 'normal'
+          },
+          y: 20
+        },
+        subtitle: {
+          style: { fontSize: '7px' },
+          y: -28
+        },
+        series: { borderWidth: 0.5 },
+        legend: { 
+          backgroundColor: null,
+          //y: 60 
+        }
+      },
       menuItemDefinitions: {
         /*downloadFullData: {
           text: 'Download full dataset (Excel)',
@@ -277,7 +299,7 @@ function createMap() {
           y: 30,
           x: 10
         }
-      }
+      } //end exporting buttons
     } //end exporting
     
   }) //end Hicharts.mapChart
@@ -609,5 +631,7 @@ function runChange () {
 }
 
 function autoMap () {
-  autoMapLoop = setInterval(runChange, interval)
+  setTimeout(function () {
+    autoMapLoop = setInterval(runChange, interval)
+  }, 1250)
 }
