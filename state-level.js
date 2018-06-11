@@ -172,7 +172,7 @@ function createMap() {
           subtitle: {
         //use subtitle element for our table notes
             text:
-            "Notes: 2015 data are excluded from the map, line chart, and 2012-2016 average due to data quality issues. Data shown are number of exemptions claimed, approximating individuals. These data do not measure, and therefore do not show, international immigration. <br/>Source: JCHS tabulations of IRS, Statistics of Income Migration Data.",
+            "Notes: 2015 data are excluded from the map, line chart, and 2012-2016 average due to data quality issues. Data shown are number of exemptions claimed, approximating individuals. These data do not measure international immigration. <br/>Source: JCHS tabulations of IRS, Statistics of Income Migration Data.",
         widthAdjust: -180,
         align: "left",
         x: 190,
