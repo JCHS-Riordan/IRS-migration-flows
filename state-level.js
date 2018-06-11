@@ -72,11 +72,30 @@ var column_chart_zones = [
 ]
 
 Highcharts.setOptions({
-  colors: ['#4E7686', '#998b7d', '#c14d00', '#43273a', '#e9c002', '#76ad99', '#c4c6a6'],
-  subtitle: { text: null },
   credits: { enabled: false },
-  exporting: { enabled: false },
-  lang: { thousandsSep: "," }
+  lang: {
+    thousandsSep: ",",
+    contextButtonTitle: 'Export Chart',
+    downloadPDF: 'Download as PDF',
+    downloadCSV: 'Download chart data (CSV)',
+    downloadXLS: 'Download chart data (Excel)'
+  },
+  title: { style: { fontFamily: '"Open Sans", sans-serif' } },
+  subtitle: { style: { fontFamily: '"Open Sans", sans-serif' } },
+  legend: { 
+    title: { style: { fontFamily: '"Open Sans", sans-serif' } },
+    itemStyle: { fontFamily: '"Open Sans", sans-serif' } 
+  },
+  tooltip: { style: { fontFamily: '"Open Sans", sans-serif' } },
+  exporting: { buttons: { contextButton: { text: '<span style="font-family: Open Sans, sans-serif;">Export</span>' } } },
+  xAxis: { 
+    title: { style: { fontFamily: '"Open Sans", sans-serif' } },
+    labels: { style: { fontFamily: '"Open Sans", sans-serif' } }
+  },
+  yAxis: {
+    title: { style: { fontFamily: '"Open Sans", sans-serif' } },
+    labels: { style: { fontFamily: '"Open Sans", sans-serif'} }
+  }
 }) //end standard options
 
 $(document).ready(function() {
@@ -153,7 +172,7 @@ function createMap() {
           subtitle: {
         //use subtitle element for our table notes
             text:
-            "Notes: 2015 data are excluded from the map, line chart, and 2012-2016 average due to data quality issues. Data shown are number of exemptions claimed, approximating individuals. These data do not measure, and therefore do not show, international immigration. <br/>Source: JCHS tabulations of IRS, Statistics of Income Migration Data.",
+            "Notes: 2015 data are excluded from the map, line chart, and 2012-2016 average due to data quality issues. Data shown are number of exemptions claimed, approximating individuals. These data do not measure international immigration. <br/>Source: JCHS tabulations of IRS, Statistics of Income Migration Data.",
         widthAdjust: -180,
         align: "left",
         x: 190,
@@ -284,7 +303,6 @@ function createMap() {
       },
       buttons: {
         contextButton: {
-          text: 'Export',
           menuItems: [
             'viewSortableTable',
             'separator',
@@ -342,7 +360,10 @@ function drilldownState (GEOID, state_name) {
 
     xAxis: {
       categories: ['<26', '26-34', '35-44', '45-54', '55-64', '65+'],
-      labels: { overflow: false },
+      labels: { 
+        overflow: false,
+        rotation: 315
+      },
       tickInterval: 1,
       tickLength: 0,
       title: {
@@ -371,8 +392,10 @@ function drilldownState (GEOID, state_name) {
         fontSize: 14
       }
     },
+    subtitle: { text: null },
     yAxis: { title: { text: null } },
     legend: { enabled: false },
+    exporting: { enabled: false },
   }) //end column chart
 
 
@@ -409,8 +432,10 @@ function drilldownState (GEOID, state_name) {
         fontSize: 14
       }
     },
+    subtitle: { text: null },
     yAxis: { title: { text: null } },
     legend: { enabled: false },
+    exporting: { enabled: false },
   }) //end line chart
 
   //add button to clear the selection
