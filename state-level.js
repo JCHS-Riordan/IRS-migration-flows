@@ -1,8 +1,17 @@
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 /*~~~ https://api.highcharts.com/highmaps/ ~~~~*/
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+var SheetID = '1olDiyrqpAmQ0KLkyZlFnfXOl61Ri-lCpE0QG-6585L4' 
+var range = 'Sheet1!A:Q'
+
+var selected_year = '2012-2016 Average'
+var selected_age_idx = 12
+
+var table_notes = 'Notes: 2015 data are excluded from the map, line chart, and 2012-2016 average due to data quality issues. Data shown are number of exemptions claimed, approximating individuals. These data do not measure international immigration. <br/>Source: JCHS tabulations of IRS, Statistics of Income Migration Data.'
+
 var states = Highcharts.geojson(Highcharts.maps['countries/us/states'])
-var logoURL = 'http://www.jchs.harvard.edu/sites/jchs.harvard.edu/files/harvard_jchs_logo_2017.png'
+var logoURL = 'http://www.jchs.harvard.edu/sites/default/files/harvard_jchs_logo_2017.png'
 
 var map = {}
 var ageGroupChart = {}
@@ -10,9 +19,6 @@ var timeSeriesChart = {}
 
 var ref_data = []
 var data = []
-
-var selected_year = "2012-2016 Average"
-var selected_age_idx = 12
 
 var map_legend_stops = [
   [0.1, '#c14d00'],
@@ -100,11 +106,6 @@ Highcharts.setOptions({
 
 $(document).ready(function() {
   //Google Sheet API request
-  var SheetID = '1olDiyrqpAmQ0KLkyZlFnfXOl61Ri-lCpE0QG-6585L4' 
-  /*Includes all years: 17F6y8EbXSKf4iTsWnw1rqNWDUZqh2jYX0hFP8MkVndI 
-  versus all years except 2015, plus 2012-2016 (no 2015) average: 
-  1olDiyrqpAmQ0KLkyZlFnfXOl61Ri-lCpE0QG-6585L4 */
-  var range = 'Sheet1!A:Q'
   var baseURL = 'https://sheets.googleapis.com/v4/spreadsheets/'
   var API_Key = 'AIzaSyDY_gHLV0A7liVYq64RxH7f7IYUKF15sOQ'
   var API_params = 'valueRenderOption=UNFORMATTED_VALUE'
@@ -124,6 +125,8 @@ $(document).ready(function() {
 
     $('.year_label').html(data[0][1])
 
+    $('#table_notes').html(table_notes)
+
     createMap()
     
   }) //end get request
@@ -134,22 +137,57 @@ function createMap() {
   // Create the chart 
   map = Highcharts.mapChart('state_migration_map', {
     chart: {
-      margin: [35, 0, 100, 0],
+      margin: [0, 0, 60, 0],
       spacingTop: 0,
       borderWidth: 0,
       events: {
         load: function() {
-          this.renderer
-            .image(logoURL, 0, this.chartHeight-57, 210, 62)
-            .add()
-          
+          if (this.renderer.forExport) {
+            this.renderer
+              .image(logoURL,0,this.chartHeight-55,200,60)
+              .add()
+          }
+
           autoMap()
         },
       },
     },
 
+    responsive: {
+      rules: [
+        {
+          condition: { maxWidth: 400 },
+          chartOptions: {
+            chart: { height: 350},
+            exporting: { enabled: false },
+            legend: {
+              itemStyle: { fontSize: '11px' },
+              title: { text: 'Annual Net<br/>Domestic Migration'},
+              symbolWidth: 200
+            }
+          }
+        },
+        {
+          condition: { maxWidth: 300 },
+          chartOptions: { 
+            chart: { 
+            height: 300,
+              marginBottom: 30
+            },
+            mapNavigation: { 
+              buttons: {
+                zoomIn: { y: 10 },
+                zoomOut: { y: 10 }
+              }
+            },
+            legend: { symbolWidth: 180 }
+          }
+        }
+      ] //end responsive rules
+    }, //end responsive
+
     title: {
-      text: '<span style="font-size: 15px;">' + 'Domestic Migration Across States by Age: ' + $('#select_age :selected').html() + '</span>' + '<br/><span style="font-size: 14px;">' + selected_year + '</span>',
+      text: null,
       style: {
         color: '#C14D00',
         fontWeight: 600,
@@ -164,26 +202,25 @@ function createMap() {
       layout: 'horizontal',
       align: 'center',
       verticalAlign: 'bottom',
-      y: -40,
+      y: 20,
       symbolWidth: 280,
       backgroundColor: 'rgba(255, 255, 255, 0.0)',
     },
 
-          subtitle: {
-        //use subtitle element for our table notes
-            text:
-            "Notes: 2015 data are excluded from the map, line chart, and 2012-2016 average due to data quality issues. Data shown are number of exemptions claimed, approximating individuals. These data do not measure international immigration. <br/>Source: JCHS tabulations of IRS, Statistics of Income Migration Data.",
-        widthAdjust: -180,
-        align: "left",
-        x: 190,
-        y: -35, //may have to change this, depending on length of notes
-        verticalAlign: "bottom",
-        style: {
-          color: "#999999",
-          fontSize: "9px"
-        }
-      },
-    
+    subtitle: {
+      //use subtitle element for our table notes
+      text: null,
+      widthAdjust: -180,
+      align: "left",
+      x: 190,
+      y: -35, //may have to change this, depending on length of notes
+      verticalAlign: "bottom",
+      style: {
+        color: "#999999",
+        fontSize: "9px"
+      }
+    },
+
     mapNavigation: { 
       enabled: true,
       buttonOptions: {
@@ -197,10 +234,10 @@ function createMap() {
       },
       buttons: {
         zoomIn: {
-          y: 35
+          y: 40
         },
         zoomOut: {
-          y: 35,
+          y: 40,
           x: -18
         }
       }
@@ -232,15 +269,17 @@ function createMap() {
       point: {
         events: {
           select: function (event) {
-            console.log('clicked on map: ' + event.target.name)
+            console.log('clicked on map: ' + event.target.name + ', ' + event.target.GEOID)
             
             clearInterval(autoMapLoop)
             
             var points = map.getSelectedPoints()
             if (event.accumulate == false) {
+              $('.modal').css("display", "block")
               drilldownState(event.target.GEOID, event.target.name)
 
             } else if (points.length === 1) {
+              $('.modal').css("display", "block")
               addState(event.target.GEOID, event.target.name)
 
             } else if (points.length > 1) {
@@ -257,17 +296,31 @@ function createMap() {
       useHTML: true,
       padding: 1,
       backgroundColor: 'rgba(247,247,247,1)',
-      valueDecimals: 0
+      //valueDecimals: 0,
+      formatter: function () {
+        //var tooltip_text = this.series.name + '<br/>' + this.point.name + ': ' + this.point.value
+        var tooltip_text = `<span style="color:${this.point.color}">\u25CF</span> ${this.series.name} <br/>${this.point.name}: ${Highcharts.numberFormat(this.point.value,0,'.',',')}`
+        if (map.getSelectedPoints().length === 1) {
+          tooltip_text += '<br/><i>Ctrl+click to compare states</i>'
+        } else {
+          tooltip_text += '<br/><i>Click for more detail</i>'
+        }
+        
+        return tooltip_text
+      }
+      
+      
     }, //end tooltip
 
        /*~~~~~~Exporting options~~~~~~*/
     exporting: {
       enabled: true,
-      filename: "Domestic Migration - " + $('#select_age :selected').html() + ', ' + selected_year + " - Harvard JCHS - State of the Nation's Housing 2018",
+      filename: "Domestic Migration - Age " + $('#select_age :selected').html() + ', ' + selected_year + " - Harvard JCHS - State of the Nation's Housing 2018",
       sourceWidth: 500,
       sourceHeight: 500,
       // change options to optimize for export
       chartOptions: {
+        chart: { marginBottom: 100 },
         title: {
           text: "Domestic Migration Across States by Age: " + $('#select_age :selected').html() + '<br/>' + selected_year,
           style: { 
@@ -277,13 +330,14 @@ function createMap() {
           y: 20
         },
         subtitle: {
+          text: table_notes,
           style: { fontSize: '7px' },
-          y: -28
+          y: -20
         },
         series: { borderWidth: 0.5 },
         legend: { 
           backgroundColor: null,
-          //y: 60 
+          y: -40 
         }
       },
       menuItemDefinitions: {
@@ -297,7 +351,8 @@ function createMap() {
         viewSortableTable: {
           text: 'View full dataset',
           onclick: function () {
-            window.open('https://codepen.io/JCHS-Riordan/full/RyzWRO')
+            //window.open('https://codepen.io/JCHS-Riordan/full/RyzWRO')
+            window.open('https://docs.google.com/spreadsheets/d/' + SheetID)
           }
         }
       },
@@ -317,7 +372,7 @@ function createMap() {
           theme: {
             fill: '#ffffff00'
           },
-          y: 30,
+          y: -5,
           x: 10
         }
       } //end exporting buttons
@@ -353,6 +408,7 @@ function drilldownState (GEOID, state_name) {
       spacingTop: 10,
       marginTop: 45,
       spacingBottom: 0,
+      marginBottom: 80,
       spacingRight: 11,
       marginLeft: 50,
       borderWidth: 0
@@ -402,8 +458,8 @@ function drilldownState (GEOID, state_name) {
   timeSeriesChart = Highcharts.chart('time_series_chart', {
     chart: {
       type: 'line',
-      spacingTop: 10,
-      marginTop: 45,
+      spacingTop: 20,
+      marginTop: 55,
       spacingBottom: -3,
       spacingRight: 11,
       marginLeft: 50,
@@ -461,8 +517,6 @@ function clearSelection () {
   }
   
   $('#clear_button').remove()
-  //$('#drilldown_title').html('')  Removing b/c subtitles added
-  $('#age_group_chart').append('<h4 class="map-instructions">Click on a state to see age groups<br>and change over time  ➞<br><span id="sub_instructions">(Ctrl+click to select a comparison state)</span></h4>')
 
   timeSeriesChart.destroy()
   ageGroupChart.destroy()
@@ -551,15 +605,15 @@ function changeMap () {
   })
 var selected_age = $('#select_age :selected').html()
 map.series[0].setData(new_map_data)
-  map.title.update({text: 
-    `<span style="font-size: 15px;">
-    Domestic Migration Across States by Age: ${selected_age}</span>
-    <br/>
-    <span style="font-size: 14px;">${selected_year}</span>`
-  })
+  $('#chart_title').html(`Domestic Migration Across States by Age: ${selected_age}`)
+  $('#subtitle').html(selected_year)
 
   $('#year_label').html(selected_year)
   
+  map.update({exporting: { 
+    chartOptions: { title: { text: 'Domestic Migration Across States by Age: ' + selected_age + '<br/>' + selected_year}},
+    filename: "Domestic Migration - Age " + selected_age + ', ' + selected_year + " - Harvard JCHS - State of the Nation's Housing 2018",
+  }})
 } //end changeMapData()
 
 
@@ -663,3 +717,24 @@ function autoMap () {
     autoMapLoop = setInterval(runChange, interval)
   }, 1250)
 }
+
+
+/* modal based on W3 example */
+// Get the modal
+var modal = document.getElementById('drilldown_modal');
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+

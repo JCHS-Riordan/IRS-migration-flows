@@ -1,32 +1,75 @@
 #dashboard_wrapper {
-  width: 1100px;
+  max-width: 500;
   margin: 20px auto;
   font-family: "Open Sans", sans-serif;
 }
 
+#chart_title {
+  text-align: center;
+  font-weight: 400; 
+  color: #c14d00;
+  margin: 10px 0; 
+}
+
+#subtitle {
+  text-align: center;
+  font-weight: 400; 
+  color: #c14d00;
+  margin: 10px 0 0 0; 
+  font-size: 16px;
+}
+
+/* modal based on W3 example */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 10px auto; /* 15% from the top and centered */
+  padding: 5px;
+  border: 1px solid #888;
+  width: 320px;  
+  max-width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+  clear: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
 #map_wrapper {
-  width: 500px;
-  height: 600px;
+  max-width: 500px;
+  height: 500px;
   margin: auto;
 }
 
 #state_migration_map {
-  height: 500px; 
-  width: 500px; 
+  max-height: 400px; 
+  max-width: 500px; 
   /*margin: 0px auto;*/
   overflow: hidden;
   margin: auto;
-}
-
-.map-instructions {
-  margin: 80px 0px 0px 40px;
-  color: #C14D00;
-  font-size: 15px;
-}
-
-#sub_instructions {
-  font-size: 12px;
-  font-weight: normal;
 }
 
 .drilldown.title {
@@ -38,10 +81,11 @@
 .drilldown {
   height: 210px; /* Was 189px */
   width: 300px;
-  /*margin: 20px auto;*/
-  float: left;
-  clear: left;
-  margin: 20px 0 0 0;
+  max-width: 100%;
+  margin: 20px auto;
+  /*float: left;*/
+  /*clear: left;*/
+  margin: 0 0 0 0;
   display: block;
   background: none;
 }
@@ -49,6 +93,7 @@
 .age-form {
   margin: auto;
   width: 200px;
+  max-width: 100%;
   display: block;
 }
 
@@ -61,23 +106,27 @@
   font-family: "Open Sans";
 }
 
-.table-notes {
-  font-size: 9px;
-  width: 500px;
-  margin: auto 20px;
+#table_notes {
+  font-size: .7rem;
   color: #666;
 }
 
+.slider-wrapper {
+  width: 200px;
+  max-width: 100%;
+  margin: auto;
+}
 /*~~~~~~~~~~~~~ Year Slider ~~~~~~~~~~~~~~~~*/
 #year_slider {
-  margin: 5px 0px 5px 150px;
+  margin: 5px 0 5px 0;
+  padding: 0;
   -webkit-appearance: none;
-  width: 200px;
+  width: 100%;
   height: 15px;
   border-radius: 3px;
   background: #E4DCD5;
   outline: none;
-  display: inline-block;
+  display: inline;
 }
 
 #year_slider::-webkit-slider-thumb {
@@ -103,13 +152,6 @@
 #year_label {
   text-align: center;
   color: rgba(100,100,100,0.9);
-  font-size: 1.10em;
-  margin: 10px auto 0 auto;
-}
-
-.hidden {
-  visibility: hidden;
-  opacity: 0;
-  transition: visibility 0.3s ease-in-out, opacity 0.3s ease-in-out;
-  transition-delay: 0s;
+  font-size: 1.10rem;
+  margin: 5px auto 0 auto;
 }
