@@ -20,6 +20,8 @@ var timeSeriesChart = {}
 var ref_data = []
 var data = []
 
+//this is a demo edit
+
 var map_legend_stops = [
   [0.1, '#c14d00'],
   [0.48, '#eab700'],
